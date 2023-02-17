@@ -3,7 +3,9 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id "kotlin-parcelize"
     id "kotlinx-serialization"
+    id 'kotlin-kapt'
 }
+
 
 android {
     namespace 'com.example.mealdb'
@@ -62,6 +64,18 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
+    implementation("io.coil-kt:coil:2.2.2")
 
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    kapt 'com.github.bumptech.glide:compiler:4.14.2'
+
+    implementation ("com.github.bumptech.glide:recyclerview-integration:4.14.2") {
+        // Excludes the support library because it's already included by Glide.
+        transitive = false
+    }
+
+    implementation("androidx.paging:paging-runtime:3.1.1")
 
 }

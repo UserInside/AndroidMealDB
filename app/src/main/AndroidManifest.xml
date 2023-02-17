@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -23,10 +24,15 @@
         </activity>
         <activity
             android:name=".meal.Activity_B_Meal"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".category.MainActivity"
+            android:launchMode="singleTask"/>
+
         <activity
             android:name=".receipt.Activity_C_Recipe"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".meal.Activity_B_Meal"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

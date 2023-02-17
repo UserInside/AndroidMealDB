@@ -3,6 +3,7 @@ package receipt.data
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
+import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -26,12 +27,12 @@ fun map(receipt: Receipt?) : ReceiptEntity {
 }
 
 class ReceiptHttpClient(
-    private val id: String
+    private val id: String?
 ) {
     private var receipt: Receipt? = null
 
     suspend fun request() : Receipt? {
-        val client = HttpClient(CIO) {
+        val client = HttpClient(OkHttp) {
             install(ContentNegotiation) {
                 json(Json {
                     prettyPrint = true
@@ -47,14 +48,8 @@ class ReceiptHttpClient(
     }
 }
 
-
-
 @Serializable
-data class Receipt(
-    val meals: List<ReceiptItem>?
-    ){
-
-}
+data class Receipt(val meals: List<ReceiptItem>?)
 
 @Serializable
 data class ReceiptItem(
@@ -112,3 +107,40 @@ data class ReceiptItem(
     val strCreativeCommonsConfirmed: String?,
     val dateModified: String?,
     )
+{
+
+    private val ingredientsList = listOf<Ingredient>(
+        Ingredient(strIngredient1, strMeasure1),
+        Ingredient(strIngredient2, strMeasure2),
+        Ingredient(strIngredient3, strMeasure3),
+        Ingredient(strIngredient4, strMeasure4),
+        Ingredient(strIngredient5 , strMeasure5),
+        Ingredient(strIngredient6 , strMeasure6),
+        Ingredient(strIngredient7, strMeasure7),
+        Ingredient(strIngredient8, strMeasure8),
+        Ingredient(strIngredient9, strMeasure9),
+        Ingredient(strIngredient10, strMeasure10),
+        Ingredient(strIngredient11, strMeasure11),
+        Ingredient(strIngredient12, strMeasure12),
+        Ingredient(strIngredient13, strMeasure13),
+        Ingredient(strIngredient14, strMeasure14),
+        Ingredient(strIngredient15, strMeasure15),
+        Ingredient(strIngredient16, strMeasure16),
+        Ingredient(strIngredient17, strMeasure17),
+        Ingredient(strIngredient18, strMeasure18),
+        Ingredient(strIngredient19, strMeasure19),
+        Ingredient(strIngredient20, strMeasure20),
+    )
+
+    val ingredients : List<Ingredient> = ingredientsList.filter { it.strIngredient != ""}.filter { it.strIngredient != null } //todo как объединить двойной фильтр
+
+    // tags
+    val tags = strTags?.split(",")
+}
+@Serializable
+data class Ingredient(
+    val strIngredient: String?,
+    val strMeasure: String?,
+) {
+
+}

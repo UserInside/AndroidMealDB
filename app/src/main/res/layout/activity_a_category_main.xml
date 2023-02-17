@@ -13,26 +13,30 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="56sp"
-        android:background="@color/background"
-        app:navigationIcon="@android:drawable/ic_menu_help" />
+        android:background="@color/background" />
 
     <FrameLayout
         android:id="@+id/framelayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#F5F5F5"
-        >
+        android:background="#F5F5F5">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_category"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             android:scrollbars="vertical"
             android:verticalScrollbarPosition="right"
-
             tools:listitem="@layout/recyclerview_categoryitem" />
+
+        <include
+            android:id="@+id/includeProgressBar"
+            layout="@layout/progress_bar"/>
+
+        <include
+            android:id="@+id/includeError"
+            layout="@layout/error" />
 
     </FrameLayout>
 

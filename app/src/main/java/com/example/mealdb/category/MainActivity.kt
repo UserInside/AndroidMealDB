@@ -1,13 +1,13 @@
 package com.example.mealdb.category
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import androidx.activity.ComponentActivity
-
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import category.data.CategoryGatewayImplementation
@@ -17,12 +17,24 @@ import category.domain.CategoryInteractor
 import com.example.mealdb.R
 import com.example.mealdb.category.domain.CategoryAdapter
 import kotlinx.coroutines.launch
+import androidx.paging.PagingDataAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 
-class MainActivity : AppCompatActivity() { //раньше было ComponentActivity()
+/*
+add tags
+add county
+ */
+
+class MainActivity : AppCompatActivity() {
     override fun onCreate(saveInstanceState: Bundle?) {
         super.onCreate(saveInstanceState)
         setContentView(R.layout.activity_a_category_main)
+
         setSupportActionBar(findViewById(R.id.appBar))
+
 
         //Data Layer
         val categoryHttpClient = CategoryHttpClient()
@@ -33,31 +45,36 @@ class MainActivity : AppCompatActivity() { //раньше было ComponentActi
 
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_category)
         recyclerView.layoutManager = LinearLayoutManager(this)
-//        recyclerView.adapter = CategoryAdapter(getCatList())
 
-        lifecycleScope.launch {
-            val data = interactor.fetchData()
-            recyclerView.adapter = CategoryAdapter(data.categoryList)
+        val progressBar = findViewById<View>(R.id.includeProgressBar)
+        val error = findViewById<View>(R.id.includeError)
+
+        try {
+
+            lifecycleScope.launch {
+                progressBar.isVisible = true
+                error.isVisible = false
+                recyclerView.isVisible = false
+
+                delay(100)
+                val data = interactor.fetchData()
+                recyclerView.adapter = CategoryAdapter(data.categoryList, this@MainActivity)
+                progressBar.isVisible = false
+                recyclerView.isVisible = true
+
+            }
+        } catch (throwable: Throwable) {
+            progressBar.isVisible = false
+            error.isVisible = true
+            recyclerView.isVisible = false
+
         }
 
-
-//            val secondActivity = Intent(this, Activity_B_Meal::class.java)
-//            secondActivity.putExtra("textFromMainActivity", editText.text.toString())
-//            startActivity(secondActivity)
     }
 
-    private fun getCatList(): List<String> {
-        return this.resources.getStringArray(R.array.cat_names).toList()
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.overflow_menu, menu)
+        return true
     }
-
-//    fun request() : String {
-//
-//        val text = resources.openRawResource(R.raw.json_meal_raw)
-//            .bufferedReader().use { it.readText() }
-//
-//        return text
-//
-//
-//    }
-
 }
