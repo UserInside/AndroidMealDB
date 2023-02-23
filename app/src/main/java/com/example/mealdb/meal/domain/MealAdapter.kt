@@ -51,7 +51,7 @@ class MealAdapter (
     }
 
     override fun getItemCount(): Int {
-        return mealList?.meals!!.size
+        return mealList?.meals?.size ?: 0
 
     }
 

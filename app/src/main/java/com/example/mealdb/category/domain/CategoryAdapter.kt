@@ -43,6 +43,7 @@ class CategoryAdapter(val categoryList: CategoryList?, context: Context)
         holder.itemView.setOnClickListener {
             val mealActivity = Intent(mContext, Activity_B_Meal::class.java)
             mealActivity.putExtra("categoryName", item.strCategory)
+            mealActivity.putExtra("flag", "category")
             mContext.startActivity(mealActivity)
         }
     }

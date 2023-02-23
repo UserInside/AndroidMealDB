@@ -26,9 +26,11 @@ fun map(from: MealList?) : MealEntity {
 }
 
 class MealHttpClient(
-    private val categoryName: String?
+    private val categoryName: String?,
+    private val flag: String?
 ) {
     private var mealList : MealList? = null
+    private var prefix: String? = null
 
     suspend fun request() : MealList? {
         val client = HttpClient(OkHttp) {
@@ -39,7 +41,14 @@ class MealHttpClient(
                 })
             }
         }
-        val response: HttpResponse = client.get("https://www.themealdb.com/api/json/v1/1/filter.php?c=$categoryName")
+        when (flag) {
+            "category" -> prefix = "c="
+            "area" -> {
+                prefix = "a="
+            }
+
+        }
+        val response: HttpResponse = client.get("https://www.themealdb.com/api/json/v1/1/filter.php?$prefix$categoryName")
         mealList = response.body()
         client.close()
 
@@ -52,10 +61,6 @@ class MealHttpClient(
 data class MealList(
     val meals: List<MealItem>?
 ) {
-
-    override fun toString(): String {
-        return "meals\n\n${meals?.joinToString(separator = "\n")}\n"
-    }
 }
 
 @Serializable
@@ -65,12 +70,4 @@ data class MealItem(
     val idMeal: String?,
 ) {
 
-    override fun toString(): String {
-        return """
-            |strMeal = $strMeal
-            |strMealThumb = $strMealThumb
-            |idMeal = $idMeal
-            |
-        """.trimMargin()
-    }
 }
