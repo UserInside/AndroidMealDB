@@ -13,7 +13,17 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="56sp"
-        android:background="@color/background" />
+        android:background="@color/background" >
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchViewCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:queryHint="Search category here..."
+            app:iconifiedByDefault="false"
+            app:queryBackground="@android:color/transparent"
+            />
+    </androidx.appcompat.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/framelayout"

@@ -17,8 +17,10 @@ class CategoryInteractor(
         return CategoryEntity(CategoryList(data?.categoryList?.categories?.sortedByDescending { it.strCategory }))
     }
 
-    fun filterCategoryList(text: String, data: CategoryEntity?) : CategoryEntity {
-        return CategoryEntity(CategoryList(data?.categoryList?.categories?.filter { it.strCategory!!.lowercase().contains(text.lowercase()) }))
+    fun filterCategoryList(text: String?, data: CategoryEntity?) : CategoryEntity {
+        return CategoryEntity(CategoryList(data?.categoryList?.categories?.filter {
+            it.strCategory?.lowercase()?.contains(text?.lowercase() ?: "") ?: false
+        }))
     }
 
 }

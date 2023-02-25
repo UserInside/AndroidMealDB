@@ -1,5 +1,6 @@
 package com.example.mealdb.category.domain
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -14,7 +15,7 @@ import com.example.mealdb.R
 import com.example.mealdb.meal.Activity_B_Meal
 
 
-class CategoryAdapter(val categoryList: CategoryList?, context: Context)
+class CategoryAdapter(var categoryList: CategoryList?, context: Context)
     : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
     val mContext = context
@@ -26,6 +27,11 @@ class CategoryAdapter(val categoryList: CategoryList?, context: Context)
 
         fun bind() {
         }
+    }
+
+        fun setFilteredCategoryEntity(categoryList: CategoryList?){
+        this.categoryList = categoryList
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {

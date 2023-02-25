@@ -24,10 +24,7 @@ import meal.data.MealGatewayImplementation
 import meal.data.MealHttpClient
 import meal.domain.MealGateway
 import meal.domain.MealInteractor
-/*
-add cuisine filter
-add filter flag
- */
+
 class Activity_B_Meal : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,18 +35,17 @@ class Activity_B_Meal : AppCompatActivity() {
         val receivedFlag = intent.getStringExtra("flag")
         setSupportActionBar(findViewById(R.id.appBar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        this.title = when(receivedFlag) {
+        this.title = when (receivedFlag) {
             "category" -> "Category: $receivedCategoryName"
             "area" -> "$receivedCategoryName cuisine"
             else -> ""
         }
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_meal)
-//        recyclerView.layoutManager = GridLayoutManager(this, 2)
 
         //Data Layer
         val mealHttpClient = MealHttpClient(receivedCategoryName, receivedFlag)
         //Domain Layer
-        val gateway  = MealGatewayImplementation(mealHttpClient)
+        val gateway = MealGatewayImplementation(mealHttpClient)
         val interactor = MealInteractor(gateway)
 
         lifecycleScope.launch {
@@ -57,17 +53,6 @@ class Activity_B_Meal : AppCompatActivity() {
             recyclerView.adapter = MealAdapter(data.meal, this@Activity_B_Meal)
         }
 
-
-
-
-
-//        val btn = findViewById<Button>(R.id.button_back_to_first_activity)
-//        btn.setOnClickListener {
-//            startActivity(Intent(this, Activity_C_Recipe::class.java))
-//        }
-
     }
-
-
 
 }
