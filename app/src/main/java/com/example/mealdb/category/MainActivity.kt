@@ -3,15 +3,12 @@ package com.example.mealdb.category
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
-import android.view.SearchEvent
 import android.view.View
-import android.widget.SearchView.OnQueryTextListener
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import category.data.CategoryGatewayImplementation
@@ -21,14 +18,12 @@ import category.domain.CategoryInteractor
 import com.example.mealdb.R
 import com.example.mealdb.category.domain.CategoryAdapter
 import kotlinx.coroutines.launch
-import androidx.paging.PagingDataAdapter
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.withContext
 
 /*
-add search by category
+add close filter in category
+add sort in category
+
  */
 
 class MainActivity : AppCompatActivity() {
@@ -45,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         //Domain Layer
         val interactor = CategoryInteractor(gateway)
 
-        val searchView = findViewById<SearchView>(R.id.searchViewCategory)
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_category)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -67,25 +61,49 @@ class MainActivity : AppCompatActivity() {
                 progressBar.isVisible = false
                 recyclerView.isVisible = true
 
+                val searchView = findViewById<SearchView>(R.id.searchViewCategory)
+                val searchButton = findViewById<ActionMenuItemView>(R.id.action_search_category)
+                searchButton.setOnClickListener {
+                    if (!searchView.isVisible) {
+                        searchView.visibility = View.VISIBLE
+                    } else {
+                        adapter.setChangedCategoryEntity(data.categoryList)
+                        searchView.visibility = View.INVISIBLE
+                    }
+
+                }
+
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         return false
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean {
-                        val filteredCategoryEntity = interactor.filterCategoryList(newText, data)
-                        if (filteredCategoryEntity.categoryList?.categories?.isEmpty() == true) {
-                            Toast.makeText(
-                                this@MainActivity,
-                                "Empty search query",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        } else {
-                            adapter.setFilteredCategoryEntity(filteredCategoryEntity.categoryList)
-                        }
+                        adapter.setChangedCategoryEntity(
+                            interactor.filterCategoryList(newText, data).categoryList
+                        )
                         return true
                     }
-                })
+                }
+                )
+
+                val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_category)
+                var sortedByName: Boolean = false
+                sortButton.setOnClickListener {
+                    if (!sortedByName) {
+                        adapter.setChangedCategoryEntity(
+                            interactor.sortByName(data).categoryList
+                        )
+                        sortedByName = true
+                    } else {
+                        adapter.setChangedCategoryEntity(
+                            interactor.sortDescendingByName(data).categoryList
+                        )
+                        sortedByName = false
+                    }
+
+
+                }
 
             }
         } catch (throwable: Throwable) {
@@ -93,14 +111,14 @@ class MainActivity : AppCompatActivity() {
             error.isVisible = true
             recyclerView.isVisible = false
 
-            //TODO check error
+            //TODO доделать, чтобы не вылетало при отключении сети
         }
 
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val inflater: MenuInflater = menuInflater
-//        inflater.inflate(R.menu.overflow_menu, menu)
-//        return true
-//    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.overflow_menu_category, menu)
+        return true
+    }
 }

@@ -22,6 +22,7 @@
             app:queryHint="Search category here..."
             app:iconifiedByDefault="false"
             app:queryBackground="@android:color/transparent"
+            android:visibility="invisible"
             />
     </androidx.appcompat.widget.Toolbar>
 
