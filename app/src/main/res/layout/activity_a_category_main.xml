@@ -1,54 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".category.MainActivity"
+    tools:openDrawer="start">
 
-    android:orientation="vertical"
-    tools:context=".category.MainActivity">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/appBar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56sp"
-        android:background="@color/background" >
+        android:layout_height="match_parent"
+        android:orientation="vertical"        >
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchViewCategory"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/appBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:queryHint="Search category here..."
-            app:iconifiedByDefault="false"
-            app:queryBackground="@android:color/transparent"
-            android:visibility="invisible"
-            />
-    </androidx.appcompat.widget.Toolbar>
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/background"
+            android:elevation="4dp">
 
-    <FrameLayout
-        android:id="@+id/framelayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#F5F5F5">
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchViewCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                app:iconifiedByDefault="false"
+                app:queryBackground="@android:color/transparent"
+                app:queryHint="Search category here..." />
+        </androidx.appcompat.widget.Toolbar>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_category"
+        <FrameLayout
+            android:id="@+id/framelayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            android:verticalScrollbarPosition="right"
-            tools:listitem="@layout/recyclerview_categoryitem" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#F5F5F5">
 
-        <include
-            android:id="@+id/includeProgressBar"
-            layout="@layout/progress_bar"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_category"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:verticalScrollbarPosition="right"
+                tools:listitem="@layout/recyclerview_categoryitem" />
 
-        <include
-            android:id="@+id/includeError"
-            layout="@layout/error" />
+            <include
+                android:id="@+id/includeProgressBar"
+                layout="@layout/progress_bar" />
 
-    </FrameLayout>
+            <include
+                android:id="@+id/includeError"
+                layout="@layout/error" />
 
-</LinearLayout>
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/nav_view"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu_category" >
+
+    </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>
+
+
+    <!--        app:headerLayout="@layout/nav_header"-->

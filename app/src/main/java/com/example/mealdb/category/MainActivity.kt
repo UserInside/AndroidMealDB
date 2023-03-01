@@ -4,10 +4,17 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,8 +28,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 
 /*
-add close filter in category
-add sort in category
 
  */
 
@@ -31,7 +36,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(saveInstanceState)
         setContentView(R.layout.activity_a_category_main)
 
-        setSupportActionBar(findViewById(R.id.appBar))
+        val appBar = findViewById<Toolbar>(R.id.appBar)
+        setSupportActionBar(appBar)
+
+        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
+        val toggle = ActionBarDrawerToggle(
+            this, drawer, appBar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        drawer.addDrawerListener(toggle)
+        toggle.syncState()
 
 
         //Data Layer
@@ -114,11 +129,25 @@ class MainActivity : AppCompatActivity() {
             //TODO доделать, чтобы не вылетало при отключении сети
         }
 
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.overflow_menu_category, menu)
-        return true
-    }
+
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                if (drawer.isDrawerOpen(GravityCompat.START)){
+                    drawer.closeDrawer(GravityCompat.START)
+                } else {
+                    Toast.makeText(this@MainActivity, "WOW", Toast.LENGTH_LONG).show()
+                    //todo как добавить обычный назад, если нет менюшки?? вместо тоста
+                }
+            }
+        })
+}
+
+
+override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    val inflater: MenuInflater = menuInflater
+    inflater.inflate(R.menu.overflow_menu_category, menu)
+    return true
+}
 }
