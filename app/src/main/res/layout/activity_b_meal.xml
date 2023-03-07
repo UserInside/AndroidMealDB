@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".meal.Activity_B_Meal">
+    tools:context=".meal.presentation.Activity_B_Meal">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/appBar"
@@ -15,7 +15,7 @@
         app:navigationIcon="?attr/actionModeCloseDrawable" />
 
     <FrameLayout
-        android:id="@+id/framelayout"
+        android:id="@+id/category_framelayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

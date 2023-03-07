@@ -1,8 +1,9 @@
-package com.example.mealdb.category
+package com.example.mealdb.category.presentation
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -24,6 +25,9 @@ import category.domain.CategoryGateway
 import category.domain.CategoryInteractor
 import com.example.mealdb.R
 import com.example.mealdb.category.domain.CategoryAdapter
+import com.example.mealdb.country.presentation.CountryListFragment
+import com.example.mealdb.ingredient.presentation.IngredientListFragment
+import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 
@@ -31,7 +35,8 @@ import kotlinx.coroutines.delay
 
  */
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener   {
+    private lateinit var drawer : DrawerLayout
     override fun onCreate(saveInstanceState: Bundle?) {
         super.onCreate(saveInstanceState)
         setContentView(R.layout.activity_a_category_main)
@@ -39,7 +44,8 @@ class MainActivity : AppCompatActivity() {
         val appBar = findViewById<Toolbar>(R.id.appBar)
         setSupportActionBar(appBar)
 
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
+        drawer = findViewById(R.id.drawer_layout)
+
         val toggle = ActionBarDrawerToggle(
             this, drawer, appBar,
             R.string.navigation_drawer_open,
@@ -47,7 +53,10 @@ class MainActivity : AppCompatActivity() {
         )
         drawer.addDrawerListener(toggle)
         toggle.syncState()
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener(this) //todo что тут должно быть вместо this ?
 
+        navigationView.setCheckedItem(R.id.nav_category)
 
         //Data Layer
         val categoryHttpClient = CategoryHttpClient()
@@ -145,6 +154,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.overflow_menu_category, menu)
+        return true
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_area -> {
+                supportFragmentManager.beginTransaction().replace(R.id.category_framelayout, CountryListFragment()).commit()
+            }
+            R.id.nav_ingredients -> {
+                supportFragmentManager.beginTransaction().replace(R.id.category_framelayout, IngredientListFragment()).commit()
+            }
+            else -> {
+                drawer.closeDrawer(GravityCompat.START)
+            }
+        }
+        drawer.closeDrawer(GravityCompat.START)
         return true
     }
 }

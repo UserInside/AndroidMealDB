@@ -1,6 +1,5 @@
-package com.example.mealdb.receipt
+package com.example.mealdb.receipt.presentation
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -9,30 +8,18 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.GridLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toolbar
-import androidx.appcompat.widget.ButtonBarLayout
-import androidx.core.app.ShareCompat
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutParams
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerInside
 import com.example.mealdb.R
-import com.example.mealdb.category.MainActivity
-import com.example.mealdb.meal.Activity_B_Meal
+import com.example.mealdb.meal.presentation.Activity_B_Meal
 import com.example.mealdb.receipt.domain.TagsAdapter
 import kotlinx.coroutines.launch
 import receipt.data.ReceiptGatewayImplementation
 import receipt.data.ReceiptHttpClient
-import receipt.data.ReceiptItem
 import receipt.domain.ReceiptInteractor
 
 
@@ -60,7 +47,6 @@ class Activity_C_Recipe : AppCompatActivity() {
         lifecycleScope.launch {
             val request = interactor.fetchReceipt()
             val data = request.receipt?.meals?.get(0)
-            Log.i("WOW", "data $data ++++ ")
 
             val image = findViewById<ImageView>(R.id.imageMealInRecipe)
             Glide

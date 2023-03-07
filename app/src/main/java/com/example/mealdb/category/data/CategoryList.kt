@@ -60,12 +60,7 @@ class CategoryHttpClient() {
 @Serializable
 data class CategoryList (
     val categories: List<CategoryItem>?
-) {
-    override fun toString(): String {
-        return "categories\n\n${categories?.joinToString(separator = "\n")}"
-    }
-
-}
+)
 
 @Serializable
 data class CategoryItem(
@@ -73,14 +68,4 @@ data class CategoryItem(
     val strCategory: String?,
     val strCategoryThumb: String?,
     val strCategoryDescription: String?,
-)  {
-
-    override fun toString(): String {
-        return """
-            |idCategory = $idCategory
-            |strCategory = $strCategory
-            |strCategoryThumb = $strCategoryThumb            
-            |
-            |""".trimMargin("|")
-    }//|strCategoryDescription = $strCategoryDescription
-}
+)

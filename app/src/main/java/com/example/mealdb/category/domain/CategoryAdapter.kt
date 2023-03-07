@@ -1,6 +1,5 @@
 package com.example.mealdb.category.domain
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import category.data.CategoryList
 import coil.load
 import com.example.mealdb.R
-import com.example.mealdb.meal.Activity_B_Meal
+import com.example.mealdb.meal.presentation.Activity_B_Meal
 
 
 class CategoryAdapter(var categoryList: CategoryList?, context: Context) :
@@ -44,14 +43,14 @@ class CategoryAdapter(var categoryList: CategoryList?, context: Context) :
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        val item = categoryList?.categories!![position]
-        holder.categoryName.text = item.strCategory
-        holder.imageCategory.load(item.strCategoryThumb)
-        holder.categoryDescription.text = item.strCategoryDescription
+        val item = categoryList?.categories?.get(position)
+        holder.categoryName.text = item?.strCategory
+        holder.imageCategory.load(item?.strCategoryThumb)
+        holder.categoryDescription.text = item?.strCategoryDescription
 
         holder.itemView.setOnClickListener {
             val mealActivity = Intent(mContext, Activity_B_Meal::class.java)
-            mealActivity.putExtra("categoryName", item.strCategory)
+            mealActivity.putExtra("categoryName", item?.strCategory)
             mealActivity.putExtra("flag", "category")
             mContext.startActivity(mealActivity)
         }
