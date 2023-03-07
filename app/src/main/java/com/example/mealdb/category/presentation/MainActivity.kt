@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                 error.isVisible = false
                 recyclerView.isVisible = false
 
-                delay(100)
+                delay(50)
                 val data = interactor.fetchData()
 
                 val adapter = CategoryAdapter(data.categoryList, this@MainActivity)
@@ -117,7 +117,6 @@ class MainActivity : AppCompatActivity() {
                         sortedByName = false
                     }
 
-
                 }
 
             }
@@ -131,23 +130,21 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true){
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (drawer.isDrawerOpen(GravityCompat.START)){
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START)
                 } else {
-                    Toast.makeText(this@MainActivity, "WOW", Toast.LENGTH_LONG).show()
-                    //todo как добавить обычный назад, если нет менюшки?? вместо тоста
+                    finish()
                 }
             }
         })
-}
+    }
 
 
-override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    val inflater: MenuInflater = menuInflater
-    inflater.inflate(R.menu.overflow_menu_category, menu)
-    return true
-}
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.overflow_menu_category, menu)
+        return true
+    }
 }
