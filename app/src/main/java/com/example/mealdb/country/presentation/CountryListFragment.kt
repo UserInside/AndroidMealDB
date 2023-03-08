@@ -28,8 +28,6 @@ class CountryListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-//        Log.i("WOW", "fragment created")
-
         val view : View = inflater.inflate(R.layout.fragment_countylist, container, false)
         //data
         val client = CountryHttpClient()
@@ -38,14 +36,13 @@ class CountryListFragment : Fragment() {
         val interactor = CountryInteractor(gateway)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_country)
-        recyclerView?.layoutManager = LinearLayoutManager(activity)
+        recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
         lifecycleScope.launch {
             val data = interactor.fetchData()
             val adapter = CountryAdapter(data.countryList)
             recyclerView?.adapter = adapter
 
         }
-
         return view
 
     }

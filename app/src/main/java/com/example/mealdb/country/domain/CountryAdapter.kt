@@ -25,9 +25,7 @@ class CountryAdapter(var countryList : CountryList) :
 
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
         val item = countryList.meals
-        Log.i("WOW", "1",)
         holder.countryName.text = item?.get(position)?.strArea ?: ""
-        Log.i("WOW", "2",)
 
     }
 

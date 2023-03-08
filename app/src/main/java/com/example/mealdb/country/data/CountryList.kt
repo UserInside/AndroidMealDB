@@ -20,7 +20,6 @@ class CountryGatewayImplementation(
     }
 
 }
-//todo добавить интерактор стран и сделать вывод списка стран
 
 fun map (item: CountryList): CountryEntity {
     return CountryEntity(item)
@@ -50,13 +49,9 @@ class CountryHttpClient(){
 @Serializable
 data class CountryList (
     val meals: List<Country>?
-        ) {
-
-}
+        )
 
 @Serializable
 data class Country(
     val strArea: String?
-){
-
-}
+)
