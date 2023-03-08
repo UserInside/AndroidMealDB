@@ -28,13 +28,13 @@
         <activity
             android:name=".meal.presentation.Activity_B_Meal"
             android:exported="false"
-            android:launchMode="singleTop"
+            android:launchMode="standard"
             android:parentActivityName=".category.presentation.MainActivity" />
 
         <activity
             android:name=".receipt.presentation.Activity_C_Recipe"
             android:exported="false"
-            android:launchMode="singleTop"
+            android:launchMode="standard"
             android:parentActivityName=".meal.presentation.Activity_B_Meal"
             tools:ignore="AppLinkUrlError">
 <!--            proverit' ignore pozzhe-->

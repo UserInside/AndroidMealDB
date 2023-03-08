@@ -1,10 +1,13 @@
 package com.example.mealdb.country.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -12,12 +15,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.mealdb.R
+import com.example.mealdb.R.*
 import com.example.mealdb.category.presentation.MainActivity
 import com.example.mealdb.country.data.Country
 import com.example.mealdb.country.data.CountryGatewayImplementation
 import com.example.mealdb.country.data.CountryHttpClient
 import com.example.mealdb.country.domain.CountryAdapter
 import com.example.mealdb.country.domain.CountryInteractor
+import com.example.mealdb.meal.presentation.Activity_B_Meal
 import kotlinx.coroutines.launch
 
 class CountryListFragment : Fragment() {
@@ -28,7 +33,7 @@ class CountryListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val view : View = inflater.inflate(R.layout.fragment_countylist, container, false)
+        val view : View = inflater.inflate(layout.fragment_countylist, container, false)
         //data
         val client = CountryHttpClient()
         val gateway = CountryGatewayImplementation(client)
@@ -39,10 +44,13 @@ class CountryListFragment : Fragment() {
         recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
         lifecycleScope.launch {
             val data = interactor.fetchData()
-            val adapter = CountryAdapter(data.countryList)
+            val adapter = CountryAdapter(data.countryList, requireActivity())
             recyclerView?.adapter = adapter
 
         }
+
+
+
         return view
 
     }

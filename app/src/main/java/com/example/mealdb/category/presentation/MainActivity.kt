@@ -103,6 +103,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean {
+
                         adapter.setChangedCategoryEntity(
                             interactor.filterCategoryList(newText, data).categoryList
                         )
@@ -161,6 +162,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.nav_area -> {
                 supportFragmentManager.beginTransaction().replace(R.id.category_framelayout, CountryListFragment()).commit()
+            }
+            R.id.nav_category -> {
+                //TODO дописать возврат к категориям
             }
             R.id.nav_ingredients -> {
                 supportFragmentManager.beginTransaction().replace(R.id.category_framelayout, IngredientListFragment()).commit()
