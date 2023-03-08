@@ -43,9 +43,8 @@ class MealHttpClient(
         }
         when (flag) {
             "category" -> prefix = "c="
-            "area" -> {
-                prefix = "a="
-            }
+            "area" -> prefix = "a="
+            "ingredient" -> prefix = "i="
 
         }
         val response: HttpResponse = client.get("https://www.themealdb.com/api/json/v1/1/filter.php?$prefix$categoryName")

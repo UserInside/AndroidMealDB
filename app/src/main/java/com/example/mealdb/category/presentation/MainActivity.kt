@@ -167,7 +167,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 //TODO дописать возврат к категориям
             }
             R.id.nav_ingredients -> {
-                supportFragmentManager.beginTransaction().replace(R.id.category_framelayout, IngredientListFragment()).commit()
+                Toast.makeText(this, "I'm not ready!", Toast.LENGTH_SHORT).show()
+                //не понятно, где искать название ингредиента в формате, в котором хочет api
+//                supportFragmentManager.beginTransaction().replace(R.id.category_framelayout, IngredientListFragment()).commit()
             }
             else -> {
                 drawer.closeDrawer(GravityCompat.START)

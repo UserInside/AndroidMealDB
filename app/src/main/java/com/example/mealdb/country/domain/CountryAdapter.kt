@@ -22,6 +22,12 @@ class CountryAdapter(var countryList : CountryList, context: Context) :
         val countryName : TextView = itemView.findViewById(R.id.text_countryName)
     }
 
+    fun setChangedCountryAdapter(countryList: CountryList){
+        this.countryList = countryList
+        notifyDataSetChanged()
+
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.recyclerview_countryitem, parent, false)

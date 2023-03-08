@@ -35,7 +35,7 @@ class IngredientListFragment : Fragment() {
 
         lifecycleScope.launch {
             val data = interactor.fetchData()
-            val adapter = IngredientAdapter(data.ingredientList)
+            val adapter = IngredientAdapter(data.ingredientList, requireActivity())
             recyclerView.adapter = adapter
         }
 

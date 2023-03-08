@@ -19,7 +19,6 @@ class Activity_B_Meal : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_b_meal)
-        Log.i("WOW", "second act created")
         val receivedCategoryName = intent.getStringExtra("categoryName")
         val receivedFlag = intent.getStringExtra("flag")
         setSupportActionBar(findViewById(R.id.appBar))
@@ -27,6 +26,7 @@ class Activity_B_Meal : AppCompatActivity() {
         this.title = when (receivedFlag) {
             "category" -> "Category: $receivedCategoryName"
             "area" -> "$receivedCategoryName cuisine"
+            "ingredient" -> "Ingredient: $receivedCategoryName"
             else -> ""
         }
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_meal)

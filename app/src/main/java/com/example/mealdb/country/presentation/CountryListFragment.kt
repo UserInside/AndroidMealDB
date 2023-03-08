@@ -7,7 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.appcompat.widget.SearchView
 import androidx.cardview.widget.CardView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -33,7 +36,7 @@ class CountryListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val view : View = inflater.inflate(layout.fragment_countylist, container, false)
+        val view: View = inflater.inflate(layout.fragment_countylist, container, false)
         //data
         val client = CountryHttpClient()
         val gateway = CountryGatewayImplementation(client)
@@ -47,6 +50,34 @@ class CountryListFragment : Fragment() {
             val adapter = CountryAdapter(data.countryList, requireActivity())
             recyclerView?.adapter = adapter
 
+
+            val searchView = activity?.findViewById<SearchView>(R.id.searchViewCategory)
+            val searchButton =
+                activity?.findViewById<ActionMenuItemView>(R.id.action_search_category)
+            searchButton?.setOnClickListener {
+                if (searchView != null) {
+                    if (!searchView.isVisible) {
+                        searchView.visibility = View.VISIBLE
+                    } else {
+                        adapter.setChangedCountryAdapter(data.countryList)
+                        searchView.visibility = View.INVISIBLE
+                    }
+                }
+
+            }
+
+            searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    adapter.setChangedCountryAdapter(
+                        interactor.filterCountryList(newText, data).countryList
+                    )
+                    return true
+                }
+            })
         }
 
 
