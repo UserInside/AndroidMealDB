@@ -3,4 +3,7 @@
     
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="ascending_by_name">Ascending by Name</string>
+    <string name="descending_by_name">Descending by Name</string>
+    <string name="sorting">Sorting</string>
 </resources>

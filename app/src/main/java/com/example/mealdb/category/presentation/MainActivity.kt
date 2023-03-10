@@ -21,8 +21,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import category.data.CategoryGatewayImplementation
 import category.data.CategoryHttpClient
+import category.domain.CategoryEntity
 import category.domain.CategoryGateway
 import category.domain.CategoryInteractor
+import com.example.mealdb.BottomSheetFragment
 import com.example.mealdb.R
 import com.example.mealdb.category.domain.CategoryAdapter
 import com.example.mealdb.country.presentation.CountryListFragment
@@ -37,6 +39,7 @@ import kotlinx.coroutines.delay
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener   {
     private lateinit var drawer : DrawerLayout
+    private lateinit var adapter : CategoryAdapter
     override fun onCreate(saveInstanceState: Bundle?) {
         super.onCreate(saveInstanceState)
         setContentView(R.layout.activity_a_category_main)
@@ -80,7 +83,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 delay(50)
                 val data = interactor.fetchData()
 
-                val adapter = CategoryAdapter(data.categoryList, this@MainActivity)
+                adapter = CategoryAdapter(data.categoryList, this@MainActivity)
                 recyclerView.adapter = adapter
                 progressBar.isVisible = false
                 recyclerView.isVisible = true
@@ -111,23 +114,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                 }
                 )
-
+                val bottomSheetFragment = BottomSheetFragment()
                 val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_category)
-                var sortedByName: Boolean = false
                 sortButton.setOnClickListener {
-                    if (!sortedByName) {
-                        adapter.setChangedCategoryEntity(
-                            interactor.sortByName(data).categoryList
-                        )
-                        sortedByName = true
-                    } else {
-                        adapter.setChangedCategoryEntity(
-                            interactor.sortDescendingByName(data).categoryList
-                        )
-                        sortedByName = false
-                    }
-
+                    bottomSheetFragment.show(supportFragmentManager, "BottomSheetDialog")
                 }
+
 
             }
         } catch (throwable: Throwable) {
@@ -146,6 +138,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     drawer.closeDrawer(GravityCompat.START)
                 } else {
                     finish()
+                    // попробовать найти функцию "назад по дефолту"
                 }
             }
         })

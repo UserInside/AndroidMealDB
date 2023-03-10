@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_sheet_filter_by_name"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="8dp"
+            android:src="@drawable/dragger_24_white" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/sorting"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+
+        <RadioGroup
+            android:id="@+id/radio_group_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp">
+
+            <RadioButton
+                android:id="@+id/radio_button_filter_ascending"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@drawable/custom_selector_icon"
+                android:layoutDirection="rtl"
+                android:paddingVertical="12dp"
+                android:text="@string/ascending_by_name"
+                android:textSize="16sp"
+
+                />
+
+            <RadioButton
+                android:id="@+id/radio_button_filter_descending"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@drawable/custom_selector_icon"
+                android:layoutDirection="rtl"
+                android:paddingVertical="12dp"
+                android:text="@string/descending_by_name"
+                android:textSize="16sp" />
+
+        </RadioGroup>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</FrameLayout>
