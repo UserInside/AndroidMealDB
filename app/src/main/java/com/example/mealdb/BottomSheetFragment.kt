@@ -14,8 +14,6 @@ class BottomSheetFragment(
     private val callbackSortDescendingByName: () -> Unit
 ) : BottomSheetDialogFragment() {
 
-    private lateinit var viewModel: MainViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

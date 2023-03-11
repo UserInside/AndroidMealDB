@@ -32,7 +32,7 @@
             android:parentActivityName=".category.presentation.MainActivity" />
 
         <activity
-            android:name=".receipt.presentation.Activity_C_Recipe"
+            android:name=".recipe.presentation.RecipeActivity"
             android:exported="false"
             android:launchMode="standard"
             android:parentActivityName=".meal.presentation.Activity_B_Meal"
@@ -45,6 +45,11 @@
                 <data android:scheme="http" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".recipe.presentation.FoodImageActivity"
+            android:exported="false"
+            android:launchMode="standard"
+            android:parentActivityName=".recipe.presentation.RecipeActivity" />
     </application>
 
 </manifest>

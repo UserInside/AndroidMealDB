@@ -1,19 +1,13 @@
 package com.example.mealdb.country.presentation
 
-import android.app.ProgressDialog.show
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.RadioButton
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,12 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mealdb.BottomSheetFragment
 import com.example.mealdb.R
 import com.example.mealdb.R.layout
-import com.example.mealdb.country.data.CountryGatewayImplementation
-import com.example.mealdb.country.data.CountryHttpClient
 import com.example.mealdb.country.domain.CountryAdapter
-import com.example.mealdb.country.domain.CountryInteractor
-import com.google.android.material.navigation.NavigationView
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
@@ -64,7 +53,6 @@ class CountryListFragment : Fragment() {
                         searchView.visibility = View.INVISIBLE
                     }
                 }
-
             }
 
             val sortButton = activity?.findViewById<ActionMenuItemView>(R.id.action_sort_category)
@@ -77,7 +65,7 @@ class CountryListFragment : Fragment() {
                 }
             )
 
-            sortButton?.setOnClickListener{
+            sortButton?.setOnClickListener {
                 bottomSheetFragment.show(parentFragmentManager, "bottomSheetInCountryList")
             }
 
@@ -101,7 +89,6 @@ class CountryListFragment : Fragment() {
         return view
 
     }
-
 
 
 }

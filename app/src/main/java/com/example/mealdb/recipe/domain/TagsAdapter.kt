@@ -1,4 +1,4 @@
-package com.example.mealdb.receipt.domain
+package com.example.mealdb.recipe.domain
 
 import android.view.LayoutInflater
 import android.view.View

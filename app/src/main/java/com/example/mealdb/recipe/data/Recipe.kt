@@ -9,28 +9,28 @@ import io.ktor.client.statement.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import receipt.domain.ReceiptEntity
-import receipt.domain.ReceiptGateway
+import receipt.domain.RecipeEntity
+import receipt.domain.RecipeGateway
 
-class ReceiptGatewayImplementation(
-    private val httpClient: ReceiptHttpClient
-) : ReceiptGateway {
+class RecipeGatewayImplementation(
+    private val httpClient: RecipeHttpClient
+) : RecipeGateway {
 
-    override suspend fun request(): ReceiptEntity {
+    override suspend fun request(): RecipeEntity {
         return map(httpClient.request())
     }
 }
 
-fun map(receipt: Receipt?): ReceiptEntity {
-    return ReceiptEntity(receipt)
+fun map(receipt: Recipe?): RecipeEntity {
+    return RecipeEntity(receipt)
 }
 
-class ReceiptHttpClient(
+class RecipeHttpClient(
     private val id: String?
 ) {
-    private var receipt: Receipt? = null
+    private var receipt: Recipe? = null
 
-    suspend fun request(): Receipt? {
+    suspend fun request(): Recipe? {
         val client = HttpClient(OkHttp) {
             install(ContentNegotiation) {
                 json(Json {
@@ -49,10 +49,10 @@ class ReceiptHttpClient(
 }
 
 @Serializable
-data class Receipt(val meals: List<ReceiptItem>?)
+data class Recipe(val meals: List<RecipeItem>?)
 
 @Serializable
-data class ReceiptItem(
+data class RecipeItem(
     val idMeal: String?,
     val strMeal: String?,
     val strDrinkAlternate: String?,

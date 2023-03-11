@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_c_recipe_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".receipt.presentation.Activity_C_Recipe">
+    tools:context=".recipe.presentation.RecipeActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/appBar"

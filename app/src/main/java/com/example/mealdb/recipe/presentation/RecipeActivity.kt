@@ -1,7 +1,6 @@
-package com.example.mealdb.receipt.presentation
+package com.example.mealdb.recipe.presentation
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,25 +9,23 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mealdb.R
 import com.example.mealdb.meal.presentation.Activity_B_Meal
-import com.example.mealdb.receipt.domain.TagsAdapter
+import com.example.mealdb.recipe.domain.TagsAdapter
 import kotlinx.coroutines.launch
-import receipt.data.ReceiptGatewayImplementation
-import receipt.data.ReceiptHttpClient
-import receipt.domain.ReceiptInteractor
 
 
-class Activity_C_Recipe : AppCompatActivity() {
+class RecipeActivity : AppCompatActivity() {
+    private lateinit var viewModel: RecipeViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_c_recipe)
         setSupportActionBar(findViewById(R.id.appBar))
-
-//        val initialActivityData: Uri? = intent?.data
 
         val mealName = intent.getStringExtra("mealName")
         val mealId = intent.getStringExtra("mealId")
@@ -36,23 +33,24 @@ class Activity_C_Recipe : AppCompatActivity() {
         supportActionBar?.title = mealName
 
 
-        //Data Layer
-        val httpClient = ReceiptHttpClient(mealId)
-        //Domain
-        val gateway = ReceiptGatewayImplementation(httpClient)
-        val interactor = ReceiptInteractor(gateway)
-
+        viewModel = ViewModelProvider(
+            this,
+            RecipeViewModelFactory(this, mealId)
+        ).get(RecipeViewModel::class.java)
 
         lifecycleScope.launch {
-            val request = interactor.fetchReceipt()
-            val data = request.receipt?.meals?.get(0)
+
+            val data = viewModel.getRecipeItem()
 
             val image = findViewById<ImageView>(R.id.imageMealInRecipe)
             Glide
-                .with(this@Activity_C_Recipe)
-                .load(data?.strMealThumb) //todo ура! надо добавить индекс и тогда появятся стр поля!! ура
-                // брать индекс 0 видится некрасивым, но работает только так.... если упбрать список из рецепта класса , то жсон не читается правильно
+                .with(this@RecipeActivity)
+                .load(viewModel.foodImage)
                 .into(image)
+
+            image.setOnClickListener{
+                viewModel.openImage()
+            }
 
             val prepare = findViewById<TextView>(R.id.prepare)
             prepare.text = "${data?.strInstructions}"
@@ -60,19 +58,14 @@ class Activity_C_Recipe : AppCompatActivity() {
             val country = findViewById<TextView>(R.id.country)
             country.text = data?.strArea
             country.setOnClickListener {
-                val mealActivity = Intent(this@Activity_C_Recipe, Activity_B_Meal::class.java)
-                mealActivity.putExtra("categoryName", data?.strArea)
-                mealActivity.putExtra("flag", "area")
-                startActivity(mealActivity)
+                viewModel.openRecipeByArea()
             }
 
             //set video button
             val videoButton = findViewById<Button>(R.id.videoButton)
             if (data?.strYoutube != "" && data?.strYoutube != null) {
                 videoButton.setOnClickListener {
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data = Uri.parse(data.strYoutube)
-                    startActivity(intent)
+                    viewModel.showVideo()
                 }
             } else {
                 videoButton.visibility = View.GONE
@@ -84,9 +77,7 @@ class Activity_C_Recipe : AppCompatActivity() {
             if (data?.strTags != null) {
                 recyclerViewTags.adapter = TagsAdapter(data.tags)
             } else {
-//                recyclerViewTags.layoutParams = LinearLayout.LayoutParams(0, 0)
                 recyclerViewTags.visibility = View.GONE
-
             }
 
             val ingredients = data?.ingredients

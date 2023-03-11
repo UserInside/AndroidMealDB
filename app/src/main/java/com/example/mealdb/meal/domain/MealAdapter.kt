@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mealdb.R
-import com.example.mealdb.receipt.presentation.Activity_C_Recipe
+import com.example.mealdb.recipe.presentation.RecipeActivity
 import meal.data.MealList
 
 class MealAdapter(
@@ -41,7 +41,7 @@ class MealAdapter(
             .into(holder.imageView)
         holder.textView.text = item.strMeal
         holder.itemView.setOnClickListener {
-            val recipeActivity = Intent(mContext, Activity_C_Recipe::class.java)
+            val recipeActivity = Intent(mContext, RecipeActivity::class.java)
             recipeActivity.putExtra("mealName", item.strMeal)
             recipeActivity.putExtra("mealId", item.idMeal)
             recipeActivity.putExtra("mealThumbnail", item.strMealThumb)

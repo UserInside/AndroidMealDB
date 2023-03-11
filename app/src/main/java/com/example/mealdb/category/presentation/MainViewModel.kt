@@ -1,5 +1,6 @@
 package com.example.mealdb.category.presentation
 
+import android.view.View
 import androidx.lifecycle.ViewModel
 import category.data.CategoryGatewayImplementation
 import category.data.CategoryHttpClient
@@ -18,6 +19,7 @@ class MainViewModel : ViewModel() {
         val data = interactor.fetchData()
         return data
     }
+
 
 
 }
