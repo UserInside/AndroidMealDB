@@ -14,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mealdb.R
-import com.example.mealdb.meal.presentation.Activity_B_Meal
 import com.example.mealdb.recipe.domain.TagsAdapter
 import kotlinx.coroutines.launch
 
@@ -41,6 +40,7 @@ class RecipeActivity : AppCompatActivity() {
         lifecycleScope.launch {
 
             val data = viewModel.getRecipeItem()
+            //todo: почему не создает объект если вместе функции указать receiptItem ?? ведь при создании модели должна инициироваться таже гетРецИтем ..
 
             val image = findViewById<ImageView>(R.id.imageMealInRecipe)
             Glide
@@ -70,7 +70,6 @@ class RecipeActivity : AppCompatActivity() {
             } else {
                 videoButton.visibility = View.GONE
             }
-
 
             //set Tags
             val recyclerViewTags = findViewById<RecyclerView>(R.id.recycler_tags)

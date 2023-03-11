@@ -1,15 +1,11 @@
 package com.example.mealdb.recipe.presentation
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide.init
-import com.example.mealdb.meal.presentation.Activity_B_Meal
+import com.example.mealdb.meal.presentation.MealActivity
 import kotlinx.coroutines.launch
 import receipt.data.RecipeGatewayImplementation
 import receipt.data.RecipeHttpClient
@@ -23,11 +19,13 @@ class RecipeViewModel(
 
     var recipeItem: RecipeItem? = null
     var foodImage: String? = null
+    var foodImagePreview: String? = null
 
     init {
         viewModelScope.launch {
             recipeItem = getRecipeItem()
             foodImage = recipeItem?.strMealThumb
+            foodImagePreview = "$foodImage/preview"
         }
     }
 
@@ -47,7 +45,7 @@ class RecipeViewModel(
     }
 
     fun openRecipeByArea() {
-        val intent = Intent(context, Activity_B_Meal::class.java)
+        val intent = Intent(context, MealActivity::class.java)
         intent.putExtra("categoryName", recipeItem?.strArea)
         intent.putExtra("flag", "area")
         context.startActivity(intent)
@@ -58,6 +56,25 @@ class RecipeViewModel(
         intent.data = Uri.parse(recipeItem?.strYoutube)
         context.startActivity(intent)
     }
+
+
+//    fun getIngredientsList() : String {
+//        val ingredients = recipeItem?.ingredients
+//        var textN = ""
+//        for (i in ingredients!!.size - 1 downTo 0) {
+//            textN = "${ingredients[i].strIngredient}\n" + textN
+//
+//        }
+//        return textN
+//    }
+//    fun getMeasuresList() : String {
+//        val ingredients = recipeItem?.ingredients
+//        var textM = ""
+//        for (i in ingredients!!.size - 1 downTo 0) {
+//            textM = "${ingredients[i].strMeasure}\n" + textM
+//        }
+//        return textM
+//    }
 
 
 }

@@ -108,7 +108,7 @@ data class RecipeItem(
     val dateModified: String?,
 ) {
 
-    private val ingredientsList = listOf<Ingredient>(
+    private val ingredientsList = listOf(
         Ingredient(strIngredient1, strMeasure1),
         Ingredient(strIngredient2, strMeasure2),
         Ingredient(strIngredient3, strMeasure3),
@@ -131,8 +131,8 @@ data class RecipeItem(
         Ingredient(strIngredient20, strMeasure20),
     )
 
-    val ingredients: List<Ingredient> = ingredientsList.filter { it.strIngredient != "" }
-        .filter { it.strIngredient != null } //todo как объединить двойной фильтр
+    val ingredients: List<Ingredient> = ingredientsList
+        .filter { it.strIngredient != "" }.filter{ it.strIngredient != null }
 
     // tags
     val tags = strTags?.split(",")

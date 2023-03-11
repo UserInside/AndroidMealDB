@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import category.data.CategoryList
 import coil.load
 import com.example.mealdb.R
-import com.example.mealdb.meal.presentation.Activity_B_Meal
+import com.example.mealdb.meal.presentation.MealActivity
 
 
 class CategoryAdapter(var categoryList: CategoryList?, context: Context) :
@@ -50,7 +50,7 @@ class CategoryAdapter(var categoryList: CategoryList?, context: Context) :
         holder.categoryDescription.text = item?.strCategoryDescription
 
         holder.itemView.setOnClickListener {
-            val mealActivity = Intent(mContext, Activity_B_Meal::class.java)
+            val mealActivity = Intent(mContext, MealActivity::class.java)
             mealActivity.putExtra("categoryName", item?.strCategory)
             mealActivity.putExtra("flag", "category")
             mContext.startActivity(mealActivity)

@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealdb.R
 import com.example.mealdb.country.data.CountryList
-import com.example.mealdb.meal.presentation.Activity_B_Meal
+import com.example.mealdb.meal.presentation.MealActivity
 
 class CountryAdapter(var countryList: CountryList, context: Context) :
     RecyclerView.Adapter<CountryAdapter.CountryViewHolder>() {
@@ -37,7 +37,7 @@ class CountryAdapter(var countryList: CountryList, context: Context) :
         val item = countryList.meals
         holder.countryName.text = item?.get(position)?.strArea ?: ""
         holder.itemView.setOnClickListener {
-            val mealActivity = Intent(mContext, Activity_B_Meal::class.java)
+            val mealActivity = Intent(mContext, MealActivity::class.java)
             mealActivity.putExtra("categoryName", countryList.meals?.get(position)?.strArea)
             mealActivity.putExtra("flag", "area")
             mContext.startActivity(mealActivity)

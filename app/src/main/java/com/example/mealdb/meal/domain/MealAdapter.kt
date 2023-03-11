@@ -20,12 +20,9 @@ class MealAdapter(
 
     val mContext = context
 
-
     class MealViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.imageMeal)
         val textView = itemView.findViewById<TextView>(R.id.textMealName)
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MealViewHolder {
@@ -37,7 +34,10 @@ class MealAdapter(
     override fun onBindViewHolder(holder: MealViewHolder, position: Int) {
         val item = mealList?.meals!![position]
         Glide.with(mContext)
-            .load(item.strMealThumb)
+            .load("${item.strMealThumb}/preview")
+            .placeholder(R.drawable.baseline_hourglass_bottom_24_black)
+            .error(R.drawable.baseline_block_24_black)
+            .fallback(R.drawable.baseline_visibility_off_24_black)
             .into(holder.imageView)
         holder.textView.text = item.strMeal
         holder.itemView.setOnClickListener {
@@ -47,7 +47,6 @@ class MealAdapter(
             recipeActivity.putExtra("mealThumbnail", item.strMealThumb)
             mContext.startActivity(recipeActivity)
         }
-
     }
 
     override fun getItemCount(): Int {

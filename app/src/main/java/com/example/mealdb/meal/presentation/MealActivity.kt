@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealdb.R
@@ -13,7 +14,8 @@ import meal.data.MealGatewayImplementation
 import meal.data.MealHttpClient
 import meal.domain.MealInteractor
 
-class Activity_B_Meal : AppCompatActivity() {
+class MealActivity : AppCompatActivity() {
+    lateinit var viewModel : MealViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,15 +32,14 @@ class Activity_B_Meal : AppCompatActivity() {
         }
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_meal)
 
-        //Data Layer
-        val mealHttpClient = MealHttpClient(receivedCategoryName, receivedFlag)
-        //Domain Layer
-        val gateway = MealGatewayImplementation(mealHttpClient)
-        val interactor = MealInteractor(gateway)
+        viewModel = ViewModelProvider(
+            this, MealViewModelFactory(
+                this, receivedCategoryName, receivedFlag))
+            .get(MealViewModel::class.java)
 
         lifecycleScope.launch {
-            val data = interactor.fetchData()
-            recyclerView.adapter = MealAdapter(data.meal, this@Activity_B_Meal)
+            val data = viewModel.getMealList()
+            recyclerView.adapter = MealAdapter(data, this@MealActivity)
         }
 
     }
