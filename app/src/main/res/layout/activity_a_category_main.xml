@@ -27,7 +27,7 @@
                 android:visibility="invisible"
                 app:iconifiedByDefault="false"
                 app:queryBackground="@android:color/transparent"
-                app:queryHint="Search category here..." />
+                app:queryHint="Enter category name..." />
         </androidx.appcompat.widget.Toolbar>
 
         <FrameLayout

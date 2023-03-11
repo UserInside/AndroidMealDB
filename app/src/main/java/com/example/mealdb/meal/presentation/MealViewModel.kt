@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import meal.data.MealGatewayImplementation
 import meal.data.MealHttpClient
 import meal.data.MealList
+import meal.domain.MealEntity
 import meal.domain.MealInteractor
 
 class MealViewModel(
@@ -16,19 +17,20 @@ class MealViewModel(
 ) : ViewModel() {
 
     var mealList: MealList? = null
+    lateinit var interactor: MealInteractor
 
     init {
         viewModelScope.launch {
-            mealList = getMealList()
+            mealList = getMealEntity()?.meal
         }
     }
 
-    suspend fun getMealList(): MealList? {
+    suspend fun getMealEntity(): MealEntity? {
         val mealHttpClient = MealHttpClient(categoryName, flag)
         val gateway = MealGatewayImplementation(mealHttpClient)
-        val interactor = MealInteractor(gateway)
+        interactor = MealInteractor(gateway)
         val request = interactor.fetchData()
         mealList = request.meal
-        return mealList
+        return MealEntity(mealList)
     }
 }

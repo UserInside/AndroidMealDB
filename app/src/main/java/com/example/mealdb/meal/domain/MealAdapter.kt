@@ -12,13 +12,19 @@ import com.bumptech.glide.Glide
 import com.example.mealdb.R
 import com.example.mealdb.recipe.presentation.RecipeActivity
 import meal.data.MealList
+import meal.domain.MealEntity
 
 class MealAdapter(
-    val mealList: MealList?,
+    var mealList: MealList?,
     context: Context
 ) : RecyclerView.Adapter<MealAdapter.MealViewHolder>() {
 
     val mContext = context
+
+    fun setChangedMealEntity(mealList: MealList?) {
+        this.mealList = mealList
+        notifyDataSetChanged()
+    }
 
     class MealViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.imageMeal)

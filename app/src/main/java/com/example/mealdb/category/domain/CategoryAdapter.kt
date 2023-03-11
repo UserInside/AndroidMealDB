@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import category.data.CategoryList
 import coil.load
+import com.bumptech.glide.Glide
 import com.example.mealdb.R
 import com.example.mealdb.meal.presentation.MealActivity
 
@@ -46,7 +47,14 @@ class CategoryAdapter(var categoryList: CategoryList?, context: Context) :
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val item = categoryList?.categories?.get(position)
         holder.categoryName.text = item?.strCategory
-        holder.imageCategory.load(item?.strCategoryThumb)
+        Glide
+            .with(mContext)
+            .load(item?.strCategoryThumb)
+            .placeholder(R.drawable.baseline_hourglass_bottom_24_black)
+            .error(R.drawable.baseline_block_24_black)
+            .fallback(R.drawable.baseline_visibility_off_24_black)
+            .into(holder.imageCategory)
+
         holder.categoryDescription.text = item?.strCategoryDescription
 
         holder.itemView.setOnClickListener {

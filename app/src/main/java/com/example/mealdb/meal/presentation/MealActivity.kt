@@ -4,18 +4,18 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mealdb.BottomSheetFragment
 import com.example.mealdb.R
 import com.example.mealdb.meal.domain.MealAdapter
 import kotlinx.coroutines.launch
-import meal.data.MealGatewayImplementation
-import meal.data.MealHttpClient
-import meal.domain.MealInteractor
 
 class MealActivity : AppCompatActivity() {
-    lateinit var viewModel : MealViewModel
+    lateinit var viewModel: MealViewModel
+    lateinit var adapter: MealAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +34,31 @@ class MealActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(
             this, MealViewModelFactory(
-                this, receivedCategoryName, receivedFlag))
-            .get(MealViewModel::class.java)
+                this, receivedCategoryName, receivedFlag
+            )
+        ).get(MealViewModel::class.java)
 
         lifecycleScope.launch {
-            val data = viewModel.getMealList()
-            recyclerView.adapter = MealAdapter(data, this@MealActivity)
+            val data = viewModel.getMealEntity()
+            adapter = MealAdapter(data?.meal, this@MealActivity)
+            recyclerView.adapter = adapter
+
+            val searchButton = findViewById<ActionMenuItemView>(R.id.searchMealCategory)
+            searchButton.setOnClickListener {
+                //todo: доделать кнопку поиска
+            }
+
+
+            val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_meal)
+            val bottomSheetFragment = BottomSheetFragment(callbackSortAscendingByName = {
+                adapter.setChangedMealEntity(viewModel.interactor.sortByName(data).meal)
+            }, callbackSortDescendingByName = {
+                adapter.setChangedMealEntity(viewModel.interactor.sortDescendingByName(data).meal)
+            })
+
+            sortButton.setOnClickListener {
+                bottomSheetFragment.show(supportFragmentManager, "bottomSheetInMealList")
+            }
         }
 
     }

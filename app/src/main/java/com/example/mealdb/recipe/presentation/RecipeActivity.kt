@@ -46,6 +46,9 @@ class RecipeActivity : AppCompatActivity() {
             Glide
                 .with(this@RecipeActivity)
                 .load(viewModel.foodImage)
+                .placeholder(R.drawable.baseline_hourglass_bottom_24_black)
+                .error(R.drawable.baseline_block_24_black)
+                .fallback(R.drawable.baseline_visibility_off_24_black)
                 .into(image)
 
             image.setOnClickListener{

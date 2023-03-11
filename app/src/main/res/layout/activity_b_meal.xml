@@ -12,15 +12,26 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/background"
-        app:navigationIcon="?attr/actionModeCloseDrawable" />
+        app:navigationIcon="?attr/actionModeCloseDrawable">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchMealCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:iconifiedByDefault="false"
+            app:queryBackground="@android:color/transparent"
+            app:queryHint="Enter meal name..." />
+
+    </androidx.appcompat.widget.Toolbar>
+
 
     <FrameLayout
         android:id="@+id/category_framelayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#F5F5F5"
-        >
+        android:background="#F5F5F5">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_meal"

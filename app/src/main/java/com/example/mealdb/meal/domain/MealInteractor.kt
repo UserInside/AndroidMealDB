@@ -14,12 +14,12 @@ class MealInteractor(
         return dataOrigin as MealEntity
     }
 
-    fun sortByName() {
-        data = MealEntity(MealList(dataOrigin?.meal?.meals?.sortedBy { it.strMeal }))
+    fun sortByName(data: MealEntity?) :MealEntity {
+        return MealEntity(MealList(dataOrigin?.meal?.meals?.sortedBy { it.strMeal }))
     }
 
-    fun sortDescendingByName() {
-        data = MealEntity(MealList(dataOrigin?.meal?.meals?.sortedByDescending { it.strMeal }))
+    fun sortDescendingByName(data: MealEntity?) : MealEntity {
+        return MealEntity(MealList(dataOrigin?.meal?.meals?.sortedByDescending { it.strMeal }))
     }
 
     fun filterMealList(text: String) {
