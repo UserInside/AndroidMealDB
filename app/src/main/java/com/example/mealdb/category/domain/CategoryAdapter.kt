@@ -27,6 +27,7 @@ class CategoryAdapter(var categoryList: CategoryList?, context: Context) :
         fun bind() {
         }
     }
+
     fun setChangedCategoryEntity(categoryList: CategoryList?) {
         this.categoryList = categoryList
         notifyDataSetChanged()

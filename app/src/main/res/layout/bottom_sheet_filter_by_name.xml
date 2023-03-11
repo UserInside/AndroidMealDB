@@ -40,9 +40,8 @@
                 android:layoutDirection="rtl"
                 android:paddingVertical="12dp"
                 android:text="@string/ascending_by_name"
-                android:textSize="16sp"
 
-                />
+                android:textSize="16sp" />
 
             <RadioButton
                 android:id="@+id/radio_button_filter_descending"

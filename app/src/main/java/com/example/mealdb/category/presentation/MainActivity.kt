@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.ActionMenuItemView
@@ -16,56 +15,43 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import category.data.CategoryGatewayImplementation
-import category.data.CategoryHttpClient
-import category.domain.CategoryEntity
-import category.domain.CategoryGateway
-import category.domain.CategoryInteractor
 import com.example.mealdb.BottomSheetFragment
 import com.example.mealdb.R
 import com.example.mealdb.category.domain.CategoryAdapter
 import com.example.mealdb.country.presentation.CountryListFragment
-import com.example.mealdb.ingredient.presentation.IngredientListFragment
 import com.google.android.material.navigation.NavigationView
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-/*
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private lateinit var drawer: DrawerLayout
+    private lateinit var adapter: CategoryAdapter
+    private lateinit var viewModel: MainViewModel
 
- */
-
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener   {
-    private lateinit var drawer : DrawerLayout
-    private lateinit var adapter : CategoryAdapter
     override fun onCreate(saveInstanceState: Bundle?) {
         super.onCreate(saveInstanceState)
         setContentView(R.layout.activity_a_category_main)
+
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         val appBar = findViewById<Toolbar>(R.id.appBar)
         setSupportActionBar(appBar)
 
         drawer = findViewById(R.id.drawer_layout)
-
         val toggle = ActionBarDrawerToggle(
             this, drawer, appBar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
+            R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
         drawer.addDrawerListener(toggle)
         toggle.syncState()
+
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this) //todo что тут должно быть вместо this ?
-
         navigationView.setCheckedItem(R.id.nav_category)
-
-        //Data Layer
-        val categoryHttpClient = CategoryHttpClient()
-        val gateway: CategoryGateway = CategoryGatewayImplementation(categoryHttpClient)
-        //Domain Layer
-        val interactor = CategoryInteractor(gateway)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_category)
         recyclerView.setHasFixedSize(true)
@@ -81,7 +67,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 recyclerView.isVisible = false
 
                 delay(50)
-                val data = interactor.fetchData()
+                val data = viewModel.getCategoryEntity()
 
                 adapter = CategoryAdapter(data.categoryList, this@MainActivity)
                 recyclerView.adapter = adapter
@@ -97,7 +83,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         adapter.setChangedCategoryEntity(data.categoryList)
                         searchView.visibility = View.INVISIBLE
                     }
-
                 }
 
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -106,19 +91,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean {
-
                         adapter.setChangedCategoryEntity(
-                            interactor.filterCategoryList(newText, data).categoryList
+                            viewModel.interactor.filterCategoryList(newText, data).categoryList
                         )
                         return true
                     }
                 }
                 )
-                val bottomSheetFragment = BottomSheetFragment()
+                val bottomSheetFragment = BottomSheetFragment(
+                    callbackSortAscendingByName = {
+                        adapter.setChangedCategoryEntity(
+                            viewModel.interactor.sortByName(data).categoryList)
+                    },
+                    callbackSortDescendingByName = {
+                        adapter.setChangedCategoryEntity(
+                            viewModel.interactor.sortDescendingByName(data).categoryList
+                        )
+                    }
+                )
                 val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_category)
                 sortButton.setOnClickListener {
                     bottomSheetFragment.show(supportFragmentManager, "BottomSheetDialog")
                 }
+
+
 
 
             }
@@ -154,7 +150,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_area -> {
-                supportFragmentManager.beginTransaction().replace(R.id.category_framelayout, CountryListFragment()).commit()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.category_framelayout, CountryListFragment()).commit()
             }
             R.id.nav_category -> {
                 //TODO дописать возврат к категориям
@@ -171,4 +168,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer.closeDrawer(GravityCompat.START)
         return true
     }
+
 }

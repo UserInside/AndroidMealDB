@@ -5,8 +5,8 @@ import meal.data.MealList
 class MealInteractor(
     private val gateway: MealGateway
 ) {
-    var dataOrigin : MealEntity? = null
-    var data : MealEntity? = null
+    var dataOrigin: MealEntity? = null
+    var data: MealEntity? = null
 
     suspend fun fetchData(): MealEntity {
         dataOrigin = gateway.request()
@@ -23,6 +23,6 @@ class MealInteractor(
     }
 
     fun filterMealList(text: String) {
-        data = MealEntity(MealList(dataOrigin?.meal?.meals?.filter { it.idMeal!!.contains(text) } ))
+        data = MealEntity(MealList(dataOrigin?.meal?.meals?.filter { it.idMeal!!.contains(text) }))
     }
 }

@@ -13,7 +13,7 @@ import kotlinx.serialization.json.Json
 
 class CountryGatewayImplementation(
     val httpClient: CountryHttpClient
-): CountryGateway {
+) : CountryGateway {
 
     override suspend fun request(): CountryEntity {
         return map(httpClient.request())
@@ -21,16 +21,16 @@ class CountryGatewayImplementation(
 
 }
 
-fun map (item: CountryList): CountryEntity {
+fun map(item: CountryList): CountryEntity {
     return CountryEntity(item)
 }
 
-class CountryHttpClient(){
+class CountryHttpClient {
 
     suspend fun request(): CountryList {
-        val client = HttpClient(OkHttp){
-            install(ContentNegotiation){
-                json(Json{
+        val client = HttpClient(OkHttp) {
+            install(ContentNegotiation) {
+                json(Json {
                     prettyPrint = true
                     isLenient = true
                 })
@@ -47,9 +47,9 @@ class CountryHttpClient(){
 }
 
 @Serializable
-data class CountryList (
+data class CountryList(
     val meals: List<Country>?
-        )
+)
 
 @Serializable
 data class Country(

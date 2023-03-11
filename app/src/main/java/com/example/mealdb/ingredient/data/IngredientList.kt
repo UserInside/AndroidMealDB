@@ -21,7 +21,7 @@ class IngredientGatewayImplementation(
     }
 }
 
-class IngredientHttpClient() {
+class IngredientHttpClient {
     suspend fun request(): IngredientList {
         val client = HttpClient(OkHttp) {
             install(ContentNegotiation) {

@@ -1,26 +1,17 @@
 package category.data
 
 
-import android.os.Parcelable
 import category.domain.CategoryEntity
 import category.domain.CategoryGateway
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.statement.*
-import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.engine.okhttp.*
-import io.ktor.client.plugins.api.SetupRequest.install
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import kotlinx.parcelize.Parcelize
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 
 class CategoryGatewayImplementation(
@@ -36,10 +27,10 @@ fun map(from: CategoryList?): CategoryEntity {
     return CategoryEntity(from)
 }
 
-class CategoryHttpClient() {
+class CategoryHttpClient {
 
 
-    suspend fun request() : CategoryList? {
+    suspend fun request(): CategoryList? {
         val client = HttpClient(OkHttp) {
             install(ContentNegotiation) {
                 json(Json {
@@ -48,7 +39,8 @@ class CategoryHttpClient() {
                 })
             }
         }
-        val response: HttpResponse = client.get("https://www.themealdb.com/api/json/v1/1/categories.php")
+        val response: HttpResponse =
+            client.get("https://www.themealdb.com/api/json/v1/1/categories.php")
         val categoryList = response.body<CategoryList?>()
 
         client.close()
@@ -58,7 +50,7 @@ class CategoryHttpClient() {
 }
 
 @Serializable
-data class CategoryList (
+data class CategoryList(
     val categories: List<CategoryItem>?
 )
 

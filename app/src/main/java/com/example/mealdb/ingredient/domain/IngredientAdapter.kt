@@ -15,7 +15,7 @@ import com.example.mealdb.meal.presentation.Activity_B_Meal
 
 class IngredientAdapter(
     var ingredientList: IngredientList,
-    val context : Context
+    val context: Context
 ) : RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder>() {
 
     val mContext = context
@@ -36,7 +36,7 @@ class IngredientAdapter(
         holder.ingredientName.text = item?.get(position)?.strIngredient
 //        holder.ingredientDescription.text = item?.get(position)?.strDescription
 
-        holder.itemView.setOnClickListener{
+        holder.itemView.setOnClickListener {
             val mealActivity = Intent(mContext, Activity_B_Meal::class.java)
             mealActivity.putExtra("caterogyName", item?.get(position)?.strIngredient)
             mealActivity.putExtra("flag", "ingredient")

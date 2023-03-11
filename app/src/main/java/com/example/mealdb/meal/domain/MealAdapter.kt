@@ -13,7 +13,7 @@ import com.example.mealdb.R
 import com.example.mealdb.receipt.presentation.Activity_C_Recipe
 import meal.data.MealList
 
-class MealAdapter (
+class MealAdapter(
     val mealList: MealList?,
     context: Context
 ) : RecyclerView.Adapter<MealAdapter.MealViewHolder>() {
@@ -23,7 +23,7 @@ class MealAdapter (
 
     class MealViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.imageMeal)
-        val textView = itemView.findViewById< TextView>(R.id.textMealName)
+        val textView = itemView.findViewById<TextView>(R.id.textMealName)
 
 
     }

@@ -4,7 +4,7 @@ class ReceiptInteractor(
     private val gateway: ReceiptGateway
 ) {
 
-    suspend fun fetchReceipt() : ReceiptEntity {
+    suspend fun fetchReceipt(): ReceiptEntity {
         return gateway.request()
     }
 }

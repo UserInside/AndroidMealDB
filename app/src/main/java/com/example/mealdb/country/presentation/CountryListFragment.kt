@@ -1,34 +1,38 @@
 package com.example.mealdb.country.presentation
 
-import android.content.Intent
+import android.app.ProgressDialog.show
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Button
+import android.widget.RadioButton
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.SearchView
-import androidx.cardview.widget.CardView
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.example.mealdb.BottomSheetFragment
 import com.example.mealdb.R
-import com.example.mealdb.R.*
-import com.example.mealdb.category.presentation.MainActivity
-import com.example.mealdb.country.data.Country
+import com.example.mealdb.R.layout
 import com.example.mealdb.country.data.CountryGatewayImplementation
 import com.example.mealdb.country.data.CountryHttpClient
 import com.example.mealdb.country.domain.CountryAdapter
 import com.example.mealdb.country.domain.CountryInteractor
-import com.example.mealdb.meal.presentation.Activity_B_Meal
+import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+
 class CountryListFragment : Fragment() {
+
+    private lateinit var viewModel: CountryViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,16 +41,13 @@ class CountryListFragment : Fragment() {
     ): View? {
 
         val view: View = inflater.inflate(layout.fragment_countylist, container, false)
-        //data
-        val client = CountryHttpClient()
-        val gateway = CountryGatewayImplementation(client)
-        //domain
-        val interactor = CountryInteractor(gateway)
+
+        viewModel = ViewModelProvider(this).get(CountryViewModel::class.java)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_country)
         recyclerView?.layoutManager = LinearLayoutManager(requireActivity())
         lifecycleScope.launch {
-            val data = interactor.fetchData()
+            val data = viewModel.getCountryEntity()
             val adapter = CountryAdapter(data.countryList, requireActivity())
             recyclerView?.adapter = adapter
 
@@ -66,6 +67,21 @@ class CountryListFragment : Fragment() {
 
             }
 
+            val sortButton = activity?.findViewById<ActionMenuItemView>(R.id.action_sort_category)
+            val bottomSheetFragment = BottomSheetFragment(
+                callbackSortAscendingByName = {
+                    adapter.setChangedCountryAdapter(viewModel.interactor.sortAscendingByName(data).countryList)
+                },
+                callbackSortDescendingByName = {
+                    adapter.setChangedCountryAdapter(viewModel.interactor.sortDescendingByName(data).countryList)
+                }
+            )
+
+            sortButton?.setOnClickListener{
+                bottomSheetFragment.show(parentFragmentManager, "bottomSheetInCountryList")
+            }
+
+
             searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     return false
@@ -73,7 +89,7 @@ class CountryListFragment : Fragment() {
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     adapter.setChangedCountryAdapter(
-                        interactor.filterCountryList(newText, data).countryList
+                        viewModel.interactor.filterCountryList(newText, data).countryList
                     )
                     return true
                 }
@@ -85,6 +101,7 @@ class CountryListFragment : Fragment() {
         return view
 
     }
+
 
 
 }

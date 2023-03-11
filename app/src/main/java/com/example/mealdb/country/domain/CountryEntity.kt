@@ -4,5 +4,4 @@ import com.example.mealdb.country.data.CountryList
 
 data class CountryEntity(
     val countryList: CountryList
-) {
-}
+)

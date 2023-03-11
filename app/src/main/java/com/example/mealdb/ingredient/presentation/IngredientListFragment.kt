@@ -21,7 +21,7 @@ class IngredientListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =  inflater.inflate(R.layout.fragment_ingredientlist, container, false)
+        val view = inflater.inflate(R.layout.fragment_ingredientlist, container, false)
 
 
         //data

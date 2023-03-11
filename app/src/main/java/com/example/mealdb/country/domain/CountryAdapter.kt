@@ -2,27 +2,25 @@ package com.example.mealdb.country.domain
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealdb.R
 import com.example.mealdb.country.data.CountryList
 import com.example.mealdb.meal.presentation.Activity_B_Meal
 
-class CountryAdapter(var countryList : CountryList, context: Context) :
+class CountryAdapter(var countryList: CountryList, context: Context) :
     RecyclerView.Adapter<CountryAdapter.CountryViewHolder>() {
 
     val mContext = context
 
-    class CountryViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView){
-        val countryName : TextView = itemView.findViewById(R.id.text_countryName)
+    class CountryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val countryName: TextView = itemView.findViewById(R.id.text_countryName)
     }
 
-    fun setChangedCountryAdapter(countryList: CountryList){
+    fun setChangedCountryAdapter(countryList: CountryList) {
         this.countryList = countryList
         notifyDataSetChanged()
 

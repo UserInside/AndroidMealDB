@@ -1,5 +1,5 @@
 package receipt.domain
 
 interface ReceiptGateway {
-    suspend fun request() : ReceiptEntity
+    suspend fun request(): ReceiptEntity
 }
