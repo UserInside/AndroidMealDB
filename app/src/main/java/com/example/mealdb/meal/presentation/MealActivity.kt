@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -43,7 +44,7 @@ class MealActivity : AppCompatActivity() {
             adapter = MealAdapter(data?.meal, this@MealActivity)
             recyclerView.adapter = adapter
 
-            val searchButton = findViewById<ActionMenuItemView>(R.id.searchMealCategory)
+            val searchButton = findViewById<SearchView>(R.id.searchMealCategory)
             searchButton.setOnClickListener {
                 //todo: доделать кнопку поиска
             }

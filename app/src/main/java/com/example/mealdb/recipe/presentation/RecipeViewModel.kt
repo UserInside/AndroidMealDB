@@ -3,9 +3,13 @@ package com.example.mealdb.recipe.presentation
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide.init
 import com.example.mealdb.meal.presentation.MealActivity
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import receipt.data.RecipeGatewayImplementation
 import receipt.data.RecipeHttpClient
@@ -21,8 +25,12 @@ class RecipeViewModel(
     var foodImage: String? = null
     var foodImagePreview: String? = null
 
+    private var _stateFlow = MutableStateFlow(recipeItem)
+    val stateFlow = _stateFlow.asStateFlow()
+
     init {
         viewModelScope.launch {
+            Log.d("WOW", "3")
             recipeItem = getRecipeItem()
             foodImage = recipeItem?.strMealThumb
             foodImagePreview = "$foodImage/preview"
@@ -30,6 +38,7 @@ class RecipeViewModel(
     }
 
     suspend fun getRecipeItem(): RecipeItem? {
+        Log.d("WOW", "4")
         val httpClient = RecipeHttpClient(mealId)
         val gateway = RecipeGatewayImplementation(httpClient)
         val interactor = RecipeInteractor(gateway)
