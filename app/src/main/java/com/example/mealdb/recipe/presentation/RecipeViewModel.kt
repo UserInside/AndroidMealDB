@@ -26,12 +26,12 @@ class RecipeViewModel(
 
     fun fetchData() {
         if (stateFlow.value.contentState == ContentState.Loading) return
+        _stateFlow.update { state ->
+            state.copy(
+                contentState = ContentState.Loading,
+            )
+        }
         try {
-            _stateFlow.update { state ->
-                state.copy(
-                    contentState = ContentState.Loading,
-                )
-            }
             viewModelScope.launch {
                 val item = getRecipeItem()
                 _stateFlow.update { state ->

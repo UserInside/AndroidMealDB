@@ -38,6 +38,14 @@ class RecipeActivity : AppCompatActivity() {
 
         val image = findViewById<ImageView>(R.id.imageMealInRecipe)
         val prepare = findViewById<TextView>(R.id.prepare)
+        val contentView = findViewById<View>(R.id.contentView)
+        val loadingView = findViewById<View>(R.id.loadingView)
+        val errorView = findViewById<View>(R.id.errorView)
+        val buttonRetry = findViewById<View>(R.id.buttonRetry)
+
+        buttonRetry.setOnClickListener {
+            viewModel.fetchData()
+        }
 
         lifecycleScope.launch {
             delay(3000)
@@ -59,28 +67,30 @@ class RecipeActivity : AppCompatActivity() {
                 when (state.contentState) {
                     ContentState.Idle,
                     ContentState.Loading -> {
-                        loadingView.visibility = View.VISIBLE
-                        errorView.visibility = View.GONE
-                        contentView.visibility = View.GONE
+                        loadingView?.visibility = View.VISIBLE
+                        errorView?.visibility = View.GONE
+                        contentView?.visibility = View.GONE
                     }
                     ContentState.Done -> {
-                        loadingView.visibility = View.GONE
-                        errorView.visibility = View.GONE
-                        contentView.visibility = View.VISIBLE
+                        loadingView?.visibility = View.GONE
+                        errorView?.visibility = View.GONE
+                        contentView?.visibility = View.VISIBLE
                     }
                     ContentState.Error -> {
-                        loadingView.visibility = View.GONE
-                        errorView.visibility = View.GONE
-                        contentView.visibility = View.VISIBLE
+                        loadingView?.visibility = View.GONE
+                        errorView?.visibility = View.VISIBLE
+                        contentView?.visibility = View.GONE
                     }
                 }
-
-                Glide.with(this@RecipeActivity).load(state.recipeItem?.strMealThumb)
-                    .placeholder(R.drawable.baseline_hourglass_bottom_24_black)
-                    .error(R.drawable.baseline_block_24_black)
-                    .fallback(R.drawable.baseline_visibility_off_24_black).into(image)
-
-                prepare.text = "${state.recipeItem?.strInstructions}"
+                image?.let { img ->
+                    Glide.with(this@RecipeActivity)
+                        .load(state.recipeItem?.strMealThumb)
+                        .placeholder(R.drawable.baseline_hourglass_bottom_24_black)
+                        .error(R.drawable.baseline_block_24_black)
+                        .fallback(R.drawable.baseline_visibility_off_24_black)
+                        .into(img)
+                }
+                prepare?.text = "${state.recipeItem?.strInstructions}"
             }
             .launchIn(lifecycleScope)
 
