@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.mealdb.R
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 
@@ -40,17 +42,47 @@ class RecipeActivity : AppCompatActivity() {
         lifecycleScope.launch {
             delay(3000)
             Log.d("WOW", "1")
-            viewModel.stateFlow.collect {
-                Log.d("WOW", "2")
-                Glide.with(this@RecipeActivity).load(it?.strMealThumb)
+//            viewModel.stateFlow.collect {
+//                Log.d("WOW", "2")
+//                Glide.with(this@RecipeActivity).load(it?.strMealThumb)
+//                    .placeholder(R.drawable.baseline_hourglass_bottom_24_black)
+//                    .error(R.drawable.baseline_block_24_black)
+//                    .fallback(R.drawable.baseline_visibility_off_24_black).into(image)
+//
+//                prepare.text = "${it?.strInstructions}"
+//                Log.d("WOW", "${it?.strInstructions}")
+//            }
+        }
+
+        viewModel.stateFlow
+            .onEach { state ->
+                when (state.contentState) {
+                    ContentState.Idle,
+                    ContentState.Loading -> {
+                        loadingView.visibility = View.VISIBLE
+                        errorView.visibility = View.GONE
+                        contentView.visibility = View.GONE
+                    }
+                    ContentState.Done -> {
+                        loadingView.visibility = View.GONE
+                        errorView.visibility = View.GONE
+                        contentView.visibility = View.VISIBLE
+                    }
+                    ContentState.Error -> {
+                        loadingView.visibility = View.GONE
+                        errorView.visibility = View.GONE
+                        contentView.visibility = View.VISIBLE
+                    }
+                }
+
+                Glide.with(this@RecipeActivity).load(state.recipeItem?.strMealThumb)
                     .placeholder(R.drawable.baseline_hourglass_bottom_24_black)
                     .error(R.drawable.baseline_block_24_black)
                     .fallback(R.drawable.baseline_visibility_off_24_black).into(image)
 
-                prepare.text = "${it?.strInstructions}"
-                Log.d("WOW", "${it?.strInstructions}")
+                prepare.text = "${state.recipeItem?.strInstructions}"
             }
-        }
+            .launchIn(lifecycleScope)
 
 //            val image = findViewById<ImageView>(R.id.imageMealInRecipe)
 //            Glide
