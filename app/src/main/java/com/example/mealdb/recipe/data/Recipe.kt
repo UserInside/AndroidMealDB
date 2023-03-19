@@ -21,14 +21,14 @@ class RecipeGatewayImplementation(
     }
 }
 
-fun map(receipt: Recipe?): RecipeEntity {
-    return RecipeEntity(receipt)
+fun map(recipe: Recipe?): RecipeEntity {
+    return RecipeEntity(recipe)
 }
 
 class RecipeHttpClient(
     private val id: String?
 ) {
-    private var receipt: Recipe? = null
+    private var recipe: Recipe? = null
 
     suspend fun request(): Recipe? {
         val client = HttpClient(OkHttp) {
@@ -41,10 +41,10 @@ class RecipeHttpClient(
         }
         val response: HttpResponse =
             client.get("https://www.themealdb.com/api/json/v1/1/lookup.php?i=$id")
-        receipt = response.body()
+        recipe = response.body()
         client.close()
 
-        return receipt
+        return recipe
     }
 }
 

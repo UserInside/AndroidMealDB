@@ -5,16 +5,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mealdb.R
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import com.example.mealdb.recipe.domain.TagsAdapter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 
 class RecipeActivity : AppCompatActivity() {
@@ -36,62 +38,73 @@ class RecipeActivity : AppCompatActivity() {
 
         val image = findViewById<ImageView>(R.id.imageMealInRecipe)
         val prepare = findViewById<TextView>(R.id.prepare)
+        val errorView = findViewById<View>(R.id.includeError)
+        val progressView = findViewById<View>(R.id.includeProgressBar)
+        val contentView = findViewById<View>(R.id.contentView)
 
-        lifecycleScope.launch {
-            delay(3000)
-            Log.d("WOW", "1")
-            viewModel.stateFlow.collect {
-                Log.d("WOW", "2")
-                Glide.with(this@RecipeActivity).load(it?.strMealThumb)
+
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+        viewModel.stateFlow.onEach { state ->
+            when (state.contentState) {
+                ContentState.Loading,
+                ContentState.Idle -> {
+                    progressView?.visibility = View.VISIBLE
+                    errorView?.visibility = View.GONE
+                    contentView?.visibility = View.GONE
+                    Log.i("OOps Activity", "state - loading")
+                }
+                ContentState.Error -> {
+                    progressView?.visibility = View.GONE
+                    errorView?.visibility = View.VISIBLE
+                    contentView?.visibility = View.GONE
+                    Log.i("OOps Activity", "state - error")
+                }
+                ContentState.Done -> {
+                    progressView?.visibility = View.GONE
+                    errorView?.visibility = View.GONE
+                    contentView?.visibility = View.VISIBLE
+                    Log.i("OOps Activity", "state - done")
+                }
+            }
+
+            image?.let { img ->
+                Log.i("OOps Activity", "loading image by URI")
+                Glide.with(this@RecipeActivity)
+                    .load(state.foodImage)
                     .placeholder(R.drawable.baseline_hourglass_bottom_24_black)
                     .error(R.drawable.baseline_block_24_black)
-                    .fallback(R.drawable.baseline_visibility_off_24_black).into(image)
-
-                prepare.text = "${it?.strInstructions}"
-                Log.d("WOW", "${it?.strInstructions}")
+                    .fallback(R.drawable.baseline_visibility_off_24_black)
+                    .into(img)
             }
-        }
 
-//            val image = findViewById<ImageView>(R.id.imageMealInRecipe)
-//            Glide
-//                .with(this@RecipeActivity)
-//                .load(viewModel.foodImage)
-//                .placeholder(R.drawable.baseline_hourglass_bottom_24_black)
-//                .error(R.drawable.baseline_block_24_black)
-//                .fallback(R.drawable.baseline_visibility_off_24_black)
-//                .into(image)
+            prepare?.text = "${state.recipeItem?.strInstructions}"
+            Log.i("OOps Activity", "preparation loaded ${prepare?.text}")
+
+            val recyclerViewTags = findViewById<RecyclerView>(R.id.recycler_tags)
+            if (state.recipeItem?.strTags != null) {
+                recyclerViewTags.adapter = TagsAdapter(state.recipeItem?.tags)
+            } else {
+                recyclerViewTags.visibility = View.GONE
+            }
+
+
+
+            val textIngredientName = findViewById<TextView>(R.id.ingredientName)
+            textIngredientName.text = viewModel.getIngredientsList()
+            val textIngredientMeasure = findViewById<TextView>(R.id.ingredientMeasure)
+            textIngredientMeasure.text = viewModel.getMeasuresList()
+
+        }.launchIn(lifecycleScope)
+    }
+
 
 //            image.setOnClickListener{
 //                viewModel.openImage()
 //            }
-//
-//            val prepare = findViewById<TextView>(R.id.prepare)
-//            prepare.text = "${data?.strInstructions}"
 
-        //set Tags
-//            val recyclerViewTags = findViewById<RecyclerView>(R.id.recycler_tags)
-//            if (data?.strTags != null) {
-//                recyclerViewTags.adapter = TagsAdapter(data?.tags)
-//            } else {
-//                recyclerViewTags.visibility = View.GONE
-//            }
-//
-//            val ingredients = data?.ingredients
-//            var textN = ""
-//            var textM = ""
-//
-//            for (i in ingredients!!.size - 1 downTo 0) {
-//                textN = "${ingredients[i].strIngredient}\n" + textN
-//                textM = "${ingredients[i].strMeasure}\n" + textM
-//
-//            }
-//
-//            val textIngredientName = findViewById<TextView>(R.id.ingredientName)
-//            textIngredientName.text = textN
-//            val textIngredientMeasure = findViewById<TextView>(R.id.ingredientMeasure)
-//            textIngredientMeasure.text = textM
 
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.share_menu, menu)
@@ -110,8 +123,5 @@ class RecipeActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-
 }
-
-
 // TODO добавить диплинк для sharebutton

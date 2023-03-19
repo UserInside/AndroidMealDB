@@ -133,8 +133,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START)
                 } else {
+//                    this.remove()
                     finish()
-                    // попробовать найти функцию "назад по дефолту"
+//                     попробовать найти функцию "назад по дефолту"
                 }
             }
         })
