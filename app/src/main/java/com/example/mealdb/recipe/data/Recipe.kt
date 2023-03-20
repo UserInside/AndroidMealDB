@@ -134,8 +134,7 @@ data class RecipeItem(
     val ingredients: List<Ingredient> = ingredientsList
         .filter { it.strIngredient != "" }.filter{ it.strIngredient != null }
 
-    // tags
-    val tags = strTags?.split(",")
+    val tags : List<String>? = strTags?.split(",")
 }
 
 @Serializable

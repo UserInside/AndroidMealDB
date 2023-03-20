@@ -9,20 +9,20 @@ import io.ktor.client.statement.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import meal.domain.MealEntity
-import meal.domain.MealGateway
+import meal.domain.MealListEntity
+import meal.domain.MealListGateway
 
 class MealGatewayImplementation(
     private val httpClient: MealHttpClient
-) : MealGateway {
+) : MealListGateway {
 
-    override suspend fun request(): MealEntity {
+    override suspend fun request(): MealListEntity {
         return map(httpClient.request())
     }
 }
 
-fun map(from: MealList?): MealEntity {
-    return MealEntity(from)
+fun map(from: MealList?): MealListEntity {
+    return MealListEntity(from)
 }
 
 class MealHttpClient(

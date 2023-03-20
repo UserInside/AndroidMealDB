@@ -3,6 +3,7 @@ package com.example.mealdb.meal.presentation
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.SearchView
@@ -10,13 +11,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealdb.BottomSheetFragment
+import com.example.mealdb.ContentState
 import com.example.mealdb.R
-import com.example.mealdb.meal.domain.MealAdapter
+import com.example.mealdb.meal.domain.MealListAdapter
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class MealActivity : AppCompatActivity() {
-    lateinit var viewModel: MealViewModel
-    lateinit var adapter: MealAdapter
+class MealListActivity : AppCompatActivity() {
+    lateinit var viewModel: MealListViewModel
+    lateinit var adapter: MealListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,17 +34,45 @@ class MealActivity : AppCompatActivity() {
             "ingredient" -> "Ingredient: $receivedCategoryName"
             else -> ""
         }
+
+        val errorView = findViewById<View>(R.id.includeError)
+        val progressView = findViewById<View>(R.id.includeProgressBar)
+        val contentView = findViewById<View>(R.id.contentViewRecipe)
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_meal)
 
+        lifecycleScope.launch {
+            viewModel.stateFlow.onEach { state ->
+                when (state.contentState) {
+                    ContentState.Idle,
+                    ContentState.Loading -> {
+                        progressView.visibility = View.VISIBLE
+                        errorView.visibility = View.GONE
+                        contentView.visibility = View.GONE
+                    }
+                    ContentState.Error -> {
+                        progressView.visibility = View.GONE
+                        errorView.visibility = View.VISIBLE
+                        contentView.visibility = View.GONE
+                    }
+                    ContentState.Done -> {
+                        progressView.visibility = View.GONE
+                        errorView.visibility = View.GONE
+                        contentView.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }
+        // todo продолжить отсюда
+
         viewModel = ViewModelProvider(
-            this, MealViewModelFactory(
+            this, MealListViewModelFactory(
                 this, receivedCategoryName, receivedFlag
             )
-        ).get(MealViewModel::class.java)
+        ).get(MealListViewModel::class.java)
 
         lifecycleScope.launch {
             val data = viewModel.getMealEntity()
-            adapter = MealAdapter(data?.meal, this@MealActivity)
+            adapter = MealListAdapter(data?.mealList, this@MealListActivity)
             recyclerView.adapter = adapter
 
             val searchButton = findViewById<SearchView>(R.id.searchMealCategory)

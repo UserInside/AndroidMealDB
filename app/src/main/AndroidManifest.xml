@@ -26,7 +26,7 @@
 
         </activity>
         <activity
-            android:name=".meal.presentation.MealActivity"
+            android:name=".meal.presentation.MealListActivity"
             android:exported="false"
             android:launchMode="standard"
             android:parentActivityName=".category.presentation.MainActivity" />
@@ -35,7 +35,7 @@
             android:name=".recipe.presentation.RecipeActivity"
             android:exported="false"
             android:launchMode="standard"
-            android:parentActivityName=".meal.presentation.MealActivity"
+            android:parentActivityName=".meal.presentation.MealListActivity"
             tools:ignore="AppLinkUrlError">
 <!--            proverit' ignore pozzhe-->
             <intent-filter>

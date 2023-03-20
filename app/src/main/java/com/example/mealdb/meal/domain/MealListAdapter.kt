@@ -12,12 +12,11 @@ import com.bumptech.glide.Glide
 import com.example.mealdb.R
 import com.example.mealdb.recipe.presentation.RecipeActivity
 import meal.data.MealList
-import meal.domain.MealEntity
 
-class MealAdapter(
+class MealListAdapter(
     var mealList: MealList?,
     context: Context
-) : RecyclerView.Adapter<MealAdapter.MealViewHolder>() {
+) : RecyclerView.Adapter<MealListAdapter.MealViewHolder>() {
 
     val mContext = context
 

@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class MealViewModelFactory(
+class MealListViewModelFactory(
     val context: Context,
     val categoryName: String?,
     val flag: String?,
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return MealViewModel(context, categoryName, flag) as T
+        return MealListViewModel(context, categoryName, flag) as T
     }
 }

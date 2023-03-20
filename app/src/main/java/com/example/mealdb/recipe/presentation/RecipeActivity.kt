@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mealdb.R
-import com.example.mealdb.recipe.domain.TagsAdapter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -40,7 +40,10 @@ class RecipeActivity : AppCompatActivity() {
         val prepare = findViewById<TextView>(R.id.prepare)
         val errorView = findViewById<View>(R.id.includeError)
         val progressView = findViewById<View>(R.id.includeProgressBar)
-        val contentView = findViewById<View>(R.id.contentView)
+        val contentView = findViewById<View>(R.id.contentViewRecipe)
+        val recyclerViewTags = findViewById<RecyclerView>(R.id.recycler_tags)
+        val videoButton = findViewById<Button>(R.id.videoButton)
+        val country = findViewById<TextView>(R.id.country)
 
 
 //        lifecycleScope.launch {
@@ -78,18 +81,25 @@ class RecipeActivity : AppCompatActivity() {
                     .fallback(R.drawable.baseline_visibility_off_24_black)
                     .into(img)
             }
-
-            prepare?.text = "${state.recipeItem?.strInstructions}"
-            Log.i("OOps Activity", "preparation loaded ${prepare?.text}")
-
-            val recyclerViewTags = findViewById<RecyclerView>(R.id.recycler_tags)
-            if (state.recipeItem?.strTags != null) {
-                recyclerViewTags.adapter = TagsAdapter(state.recipeItem?.tags)
-            } else {
-                recyclerViewTags.visibility = View.GONE
+            image.setOnClickListener{
+                viewModel.openImage()
             }
 
+            prepare?.text = "${state.recipeItem?.strInstructions}"
 
+            country.text = state.recipeItem?.strArea
+            country.setOnClickListener{
+                viewModel.openRecipeListByArea()
+            }
+
+            videoButton.setOnClickListener {
+                viewModel.showVideo()
+            }
+
+            if (state.recipeItem?.strTags != null) {
+                recyclerViewTags.visibility = View.VISIBLE
+                recyclerViewTags.adapter = viewModel.showTags()
+            }
 
             val textIngredientName = findViewById<TextView>(R.id.ingredientName)
             textIngredientName.text = viewModel.getIngredientsList()
@@ -100,9 +110,7 @@ class RecipeActivity : AppCompatActivity() {
     }
 
 
-//            image.setOnClickListener{
-//                viewModel.openImage()
-//            }
+
 
 
 

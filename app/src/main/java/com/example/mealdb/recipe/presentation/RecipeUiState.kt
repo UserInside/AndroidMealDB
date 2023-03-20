@@ -1,5 +1,6 @@
 package com.example.mealdb.recipe.presentation
 
+import com.example.mealdb.ContentState
 import receipt.data.RecipeItem
 
 
@@ -10,9 +11,3 @@ data class RecipeUiState(
     val contentState: ContentState = ContentState.Idle
 )
 
-sealed class ContentState {
-    object Error : ContentState()
-    object Loading : ContentState()
-    object Done : ContentState()
-    object Idle : ContentState()
-}

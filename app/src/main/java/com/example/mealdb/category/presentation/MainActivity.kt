@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.nav_area -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.category_framelayout, CountryListFragment()).commit()
+                    .replace(R.id.contentViewMealList, CountryListFragment()).commit()
             }
             R.id.nav_category -> {
                 //TODO дописать возврат к категориям

@@ -5,12 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.lifecycle.viewModelScope
-import com.example.mealdb.meal.presentation.MealActivity
+import com.example.mealdb.ContentState
+import com.example.mealdb.meal.presentation.MealListActivity
+import com.example.mealdb.recipe.domain.TagsAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import receipt.data.Ingredient
@@ -28,32 +28,16 @@ class RecipeViewModel(
     private var _stateFlow = MutableStateFlow(RecipeUiState())
     val stateFlow : StateFlow<RecipeUiState> = _stateFlow
 
-
     init {
         fetchData()
-
-        Log.i("OOps ViewMode", "init func executed")
-
-        Log.i(
-            "OOps ViewMode - loaded preparation",
-            "${stateFlow.value.recipeItem?.strInstructions}"
-        )
-        Log.i("OOps ViewMode - given mealID", "${mealId}")
     }
 
     fun fetchData() {
-        Log.i("OOps ViewMode", "fetchData func execute")
-        if (stateFlow.value.contentState == ContentState.Loading) {
-            Log.i("OOps ViewMode", "state set \"loading\" and return")
-            return
-        }
-
+        if (stateFlow.value.contentState == ContentState.Loading) return
 
         _stateFlow.update { state -> state.copy(contentState = ContentState.Loading) }
-        Log.i("OOps ViewMode", "state set \"loading\" and go try to DONE")
         try {
             viewModelScope.launch {
-                Log.i("OOps ViewMode", "")
                 val recipeItem = getRecipeItem()
                 _stateFlow.update { state ->
                     val foodImage = recipeItem?.strMealThumb
@@ -63,28 +47,22 @@ class RecipeViewModel(
                         foodImagePreview = foodImage?.let { "$foodImage/preview" },
                         contentState = ContentState.Done
                     )
-
                 }
-                Log.i("OOps ViewModel -","${stateFlow.value.foodImage}")
             }
-
 
         } catch (e: Throwable) {
             _stateFlow.update { state ->
                 state.copy(contentState = ContentState.Error)
             }
         }
-
     }
 
     suspend fun getRecipeItem(): RecipeItem? {
-        Log.i("OOps ViewMode", "getRecipeItem func execute")
         val httpClient = RecipeHttpClient(mealId)
         val gateway: RecipeGateway = RecipeGatewayImplementation(httpClient)
         val interactor = RecipeInteractor(gateway)
         val request = interactor.fetchRecipe()
         val recipeItem = request.recipe?.meals?.get(0)
-        Log.i("OOps ViewMode", "${recipeItem?.strArea}")
         return recipeItem
     }
 
@@ -94,8 +72,8 @@ class RecipeViewModel(
         context.startActivity(intent)
     }
 
-    fun openRecipeByArea() {
-        val intent = Intent(context, MealActivity::class.java)
+    fun openRecipeListByArea() {
+        val intent = Intent(context, MealListActivity::class.java)
         intent.putExtra("categoryName", stateFlow.value.recipeItem?.strArea)
         intent.putExtra("flag", "area")
         context.startActivity(intent)
@@ -105,6 +83,10 @@ class RecipeViewModel(
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(stateFlow.value.recipeItem?.strYoutube)
         context.startActivity(intent)
+    }
+
+    fun showTags() : TagsAdapter {
+        return TagsAdapter(stateFlow.value.recipeItem?.tags)
     }
 
 
@@ -117,6 +99,7 @@ class RecipeViewModel(
         }
         return textN
     }
+
     fun getMeasuresList() : String {
         val ingredients : List<Ingredient>? = stateFlow.value.recipeItem?.ingredients
         var textM = ""

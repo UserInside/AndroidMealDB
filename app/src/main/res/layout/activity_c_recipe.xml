@@ -21,7 +21,7 @@
         android:layout_weight="1">
 
         <ScrollView
-            android:id="@+id/contentView"
+            android:id="@+id/contentViewRecipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="7dp"
@@ -93,6 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="7dp"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/recyclerview_tags" />
 

@@ -9,10 +9,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import category.data.CategoryList
-import coil.load
 import com.bumptech.glide.Glide
 import com.example.mealdb.R
-import com.example.mealdb.meal.presentation.MealActivity
+import com.example.mealdb.meal.presentation.MealListActivity
 
 
 class CategoryAdapter(var categoryList: CategoryList?, context: Context) :
@@ -58,10 +57,10 @@ class CategoryAdapter(var categoryList: CategoryList?, context: Context) :
         holder.categoryDescription.text = item?.strCategoryDescription
 
         holder.itemView.setOnClickListener {
-            val mealActivity = Intent(mContext, MealActivity::class.java)
-            mealActivity.putExtra("categoryName", item?.strCategory)
-            mealActivity.putExtra("flag", "category")
-            mContext.startActivity(mealActivity)
+            val mealListActivity = Intent(mContext, MealListActivity::class.java)
+            mealListActivity.putExtra("categoryName", item?.strCategory)
+            mealListActivity.putExtra("flag", "category")
+            mContext.startActivity(mealListActivity)
         }
     }
 

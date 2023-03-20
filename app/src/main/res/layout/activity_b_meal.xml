@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".meal.presentation.MealActivity">
+    tools:context=".meal.presentation.MealListActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/appBar"
@@ -27,7 +27,7 @@
 
 
     <FrameLayout
-        android:id="@+id/category_framelayout"
+        android:id="@+id/contentViewMealList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -42,5 +42,16 @@
             tools:listitem="@layout/recyclerview_mealitem" />
 
     </FrameLayout>
+
+    <include
+        android:id="@+id/includeProgressBar"
+        layout="@layout/progress_bar"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/includeError"
+        layout="@layout/error"
+        android:visibility="gone" />
+
 
 </LinearLayout>

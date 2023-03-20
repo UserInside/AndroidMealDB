@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Assertions.*
 
 
 class MealInteractorTest {
-    private val interactor = MealInteractor(
-        object : MealGateway {                             //TODO что тут значит object и почему фигурные скобки
-            override suspend fun request(): MealEntity {
-                return MealEntity(                           // делаем имитацию
-                    meal = MealList(
+    private val interactor = MealListInteractor(
+        object : MealListGateway {                             //TODO что тут значит object и почему фигурные скобки
+            override suspend fun request(): MealListEntity {
+                return MealListEntity(                           // делаем имитацию
+                    mealList = MealList(
                         meals = listOf(
                             MealItem(
                                 strMeal = "A",
@@ -71,7 +71,7 @@ class MealInteractorTest {
         interactor.sortByName()
         assertIterableEquals(
             listOf("A", "B", "C"),
-            interactor.data?.meal?.meals?.map { it.strMeal }.orEmpty(),
+            interactor.data?.mealList?.meals?.map { it.strMeal }.orEmpty(),
             "Sort Failed"
         )
     }
@@ -81,7 +81,7 @@ class MealInteractorTest {
         interactor.sortDescendingByName()
         assertIterableEquals(
             listOf("C", "B", "A"),
-            interactor.data?.meal?.meals?.map { it.strMeal }.orEmpty(),
+            interactor.data?.mealList?.meals?.map { it.strMeal }.orEmpty(),
             "Sort by descending failed"
         )
     }
@@ -91,7 +91,7 @@ class MealInteractorTest {
         interactor.filterMealList("27")
         assertIterableEquals(
             listOf("52775", "52794"),
-            interactor.data?.meal?.meals?.map { mealItem -> mealItem.idMeal }.orEmpty(),
+            interactor.data?.mealList?.meals?.map { mealItem -> mealItem.idMeal }.orEmpty(),
             "Filter failed"
         )
     }
