@@ -1,8 +1,8 @@
 package category.data
 
 
-import category.domain.CategoryEntity
-import category.domain.CategoryGateway
+import category.domain.CategoryListEntity
+import category.domain.CategoryListGateway
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.okhttp.*
@@ -14,17 +14,17 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 
-class CategoryGatewayImplementation(
+class CategoryListGatewayImplementation(
     private val categoryHttpClient: CategoryHttpClient
-) : CategoryGateway {
+) : CategoryListGateway {
 
-    override suspend fun request(): CategoryEntity {
+    override suspend fun request(): CategoryListEntity {
         return map(categoryHttpClient.request())
     }
 }
 
-fun map(from: CategoryList?): CategoryEntity {
-    return CategoryEntity(from)
+fun map(from: CategoryList?): CategoryListEntity {
+    return CategoryListEntity(from)
 }
 
 class CategoryHttpClient {

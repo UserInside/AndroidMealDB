@@ -5,8 +5,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +17,7 @@ import com.example.mealdb.BottomSheetFragment
 import com.example.mealdb.ContentState
 import com.example.mealdb.R
 import com.example.mealdb.meal.domain.MealListAdapter
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
@@ -26,7 +30,8 @@ class MealListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_b_meal)
         val receivedCategoryName = intent.getStringExtra("categoryName")
         val receivedFlag = intent.getStringExtra("flag")
-        setSupportActionBar(findViewById(R.id.appBar))
+        val appBar = findViewById<Toolbar>(R.id.appBar2)
+        setSupportActionBar(appBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         this.title = when (receivedFlag) {
             "category" -> "Category: $receivedCategoryName"
@@ -37,8 +42,13 @@ class MealListActivity : AppCompatActivity() {
 
         val errorView = findViewById<View>(R.id.includeError)
         val progressView = findViewById<View>(R.id.includeProgressBar)
-        val contentView = findViewById<View>(R.id.contentViewRecipe)
+        val contentView = findViewById<View>(R.id.contentViewMealList)
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_meal)
+
+        viewModel = ViewModelProvider(
+            this, MealListViewModelFactory(
+                this, receivedCategoryName, receivedFlag)
+        ).get(MealListViewModel::class.java)
 
         lifecycleScope.launch {
             viewModel.stateFlow.onEach { state ->
@@ -60,37 +70,46 @@ class MealListActivity : AppCompatActivity() {
                         contentView.visibility = View.VISIBLE
                     }
                 }
-            }
-        }
-        // todo продолжить отсюда
 
-        viewModel = ViewModelProvider(
-            this, MealListViewModelFactory(
-                this, receivedCategoryName, receivedFlag
-            )
-        ).get(MealListViewModel::class.java)
+                adapter = MealListAdapter(state.mealListEntity?.mealList, this@MealListActivity)
+                recyclerView.adapter = adapter
 
-        lifecycleScope.launch {
-            val data = viewModel.getMealEntity()
-            adapter = MealListAdapter(data?.mealList, this@MealListActivity)
-            recyclerView.adapter = adapter
+                val searchView = findViewById<SearchView>(R.id.searchViewMealList)
+                val fuckingSearchButton = findViewById<ActionMenuItemView>(R.id.action_search_meal)
+                fuckingSearchButton?.setOnClickListener { //разобраться почему не работает без знака вопроса
+                    if (!searchView.isVisible) {
+                        searchView.visibility = View.VISIBLE
+                    } else {
+                        adapter.setChangedMealEntity(state.mealListEntity?.mealList)
+                        searchView.visibility = View.INVISIBLE
+                    }
+                }
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        return false
+                    }
 
-            val searchButton = findViewById<SearchView>(R.id.searchMealCategory)
-            searchButton.setOnClickListener {
-                //todo: доделать кнопку поиска
-            }
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        adapter.setChangedMealEntity(
+                            viewModel.getMealListSearched(newText)?.mealList
+                        )
+                        return true
+                    }
+                })
 
+                val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_meal)
+                val bottomSheetFragment = BottomSheetFragment(
+                    callbackSortAscendingByName = {
+                        adapter.setChangedMealEntity(viewModel.getMealListEntitySortedAscendingByName()?.mealList)},
+                    callbackSortDescendingByName = {
+                        adapter.setChangedMealEntity(viewModel.getMealListEntitySortedDescendingByName()?.mealList)
+                    })
 
-            val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_meal)
-            val bottomSheetFragment = BottomSheetFragment(callbackSortAscendingByName = {
-                adapter.setChangedMealEntity(viewModel.interactor.sortByName(data).meal)
-            }, callbackSortDescendingByName = {
-                adapter.setChangedMealEntity(viewModel.interactor.sortDescendingByName(data).meal)
-            })
+                sortButton?.setOnClickListener {
+                    bottomSheetFragment.show(supportFragmentManager, "bottomSheetInMealList")
+                }
 
-            sortButton.setOnClickListener {
-                bottomSheetFragment.show(supportFragmentManager, "bottomSheetInMealList")
-            }
+            }.launchIn(lifecycleScope)
         }
 
     }

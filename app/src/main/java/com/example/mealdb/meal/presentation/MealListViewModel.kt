@@ -20,6 +20,8 @@ class MealListViewModel(
     val flag: String?,
 ) : ViewModel() {
 
+    var interactor : MealListInteractor? = null
+
     private val _stateFlow = MutableStateFlow(MealListUiState())
     val stateFlow : StateFlow<MealListUiState> = _stateFlow.asStateFlow()
 
@@ -34,10 +36,10 @@ class MealListViewModel(
 
         try {
             viewModelScope.launch {
-                val mealList = getMealEntity()?.mealList
+                val mealListEntity = getMealListEntity()
                 _stateFlow.update { state ->
                     state.copy(
-                        mealList = mealList,
+                        mealListEntity = mealListEntity,
                         contentState = ContentState.Done
                     ) }
             }
@@ -49,12 +51,24 @@ class MealListViewModel(
         }
     }
 
-    suspend fun getMealEntity(): MealListEntity? {
+    suspend fun getMealListEntity(): MealListEntity {
         val mealHttpClient = MealHttpClient(categoryName, flag)
         val gateway = MealGatewayImplementation(mealHttpClient)
-        val interactor = MealListInteractor(gateway)
-        val request = interactor.fetchData()
-        val mealList = request.mealList
+        interactor = MealListInteractor(gateway)
+        val request = interactor?.fetchData()
+        val mealList = request?.mealList
         return MealListEntity(mealList)
+    }
+
+    fun getMealListEntitySortedAscendingByName() : MealListEntity? {
+        return interactor?.sortByName(_stateFlow.value.mealListEntity)
+    }
+
+    fun getMealListEntitySortedDescendingByName() : MealListEntity? {
+        return interactor?.sortDescendingByName(_stateFlow.value.mealListEntity)
+    }
+
+    fun getMealListSearched(query: String?) : MealListEntity? {
+        return interactor?.filterMealList(query ?: "")
     }
 }

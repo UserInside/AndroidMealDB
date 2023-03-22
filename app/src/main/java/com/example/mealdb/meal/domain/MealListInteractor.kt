@@ -22,7 +22,7 @@ class MealListInteractor(
         return MealListEntity(MealList(dataOrigin?.mealList?.meals?.sortedByDescending { it.strMeal }))
     }
 
-    fun filterMealList(text: String) {
-        data = MealListEntity(MealList(dataOrigin?.mealList?.meals?.filter { it.idMeal!!.contains(text) }))
+    fun filterMealList(text: String) : MealListEntity {
+        return MealListEntity(MealList(dataOrigin?.mealList?.meals?.filter { it.strMeal?.lowercase()?.contains(text.lowercase()) ?: false }))
     }
 }

@@ -6,6 +6,7 @@
         android:title="search button"
         android:icon="@drawable/baseline_search_24_white"
         app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/action_sort_category"
         android:title="sort button"

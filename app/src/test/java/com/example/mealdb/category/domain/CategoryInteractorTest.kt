@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 
 class CategoryInteractorTest {
-    private val interactor = CategoryInteractor(
-        object : CategoryGateway {
-            override suspend fun request(): CategoryEntity {
-                return CategoryEntity(
+    private val interactor = CategoryListInteractor(
+        object : CategoryListGateway {
+            override suspend fun request(): CategoryListEntity {
+                return CategoryListEntity(
                     categoryList = CategoryList(
                         categories = listOf<CategoryItem>(
                             CategoryItem(
@@ -43,7 +43,7 @@ class CategoryInteractorTest {
 
     )
 
-    var data : CategoryEntity? = null
+    var data : CategoryListEntity? = null
 
     @BeforeEach
     fun setUp() {

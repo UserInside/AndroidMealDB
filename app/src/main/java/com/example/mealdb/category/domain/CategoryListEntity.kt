@@ -2,6 +2,6 @@ package category.domain
 
 import category.data.CategoryList
 
-data class CategoryEntity(
+data class CategoryListEntity(
     val categoryList: CategoryList?
 )

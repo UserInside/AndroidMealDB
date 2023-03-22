@@ -8,20 +8,23 @@
     tools:context=".meal.presentation.MealListActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/appBar"
+        android:id="@+id/appBar2"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/background"
         app:navigationIcon="?attr/actionModeCloseDrawable">
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchMealCategory"
+            android:id="@+id/searchViewMealList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:gravity="start"
             android:visibility="invisible"
             app:iconifiedByDefault="false"
             app:queryBackground="@android:color/transparent"
-            app:queryHint="Enter meal name..." />
+            app:queryHint="Enter meal name..."
+            app:searchIcon="@drawable/baseline_search_24_white" />
 
     </androidx.appcompat.widget.Toolbar>
 

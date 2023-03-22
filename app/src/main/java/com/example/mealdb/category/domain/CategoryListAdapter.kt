@@ -14,8 +14,8 @@ import com.example.mealdb.R
 import com.example.mealdb.meal.presentation.MealListActivity
 
 
-class CategoryAdapter(var categoryList: CategoryList?, context: Context) :
-    RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryListAdapter(var categoryList: CategoryList?, context: Context) :
+    RecyclerView.Adapter<CategoryListAdapter.CategoryViewHolder>() {
 
     val mContext = context
 

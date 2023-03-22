@@ -21,22 +21,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealdb.BottomSheetFragment
 import com.example.mealdb.R
-import com.example.mealdb.category.domain.CategoryAdapter
+import com.example.mealdb.category.domain.CategoryListAdapter
 import com.example.mealdb.country.presentation.CountryListFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainCategoryListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var drawer: DrawerLayout
-    private lateinit var adapter: CategoryAdapter
-    private lateinit var viewModel: MainViewModel
+    private lateinit var adapter: CategoryListAdapter
+    private lateinit var viewModel: CategoryListViewModel
 
     override fun onCreate(saveInstanceState: Bundle?) {
         super.onCreate(saveInstanceState)
         setContentView(R.layout.activity_a_category_main)
 
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(CategoryListViewModel::class.java)
 
         val appBar = findViewById<Toolbar>(R.id.appBar)
         setSupportActionBar(appBar)
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 delay(50)
                 val data = viewModel.getCategoryEntity()
 
-                adapter = CategoryAdapter(data.categoryList, this@MainActivity)
+                adapter = CategoryListAdapter(data.categoryList, this@MainCategoryListActivity)
                 recyclerView.adapter = adapter
                 progressBar.isVisible = false
                 recyclerView.isVisible = true
