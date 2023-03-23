@@ -15,19 +15,23 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealdb.BottomSheetFragment
+import com.example.mealdb.ContentState
 import com.example.mealdb.R
 import com.example.mealdb.category.domain.CategoryListAdapter
 import com.example.mealdb.country.presentation.CountryListFragment
 import com.google.android.material.navigation.NavigationView
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class MainCategoryListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainCategoryListActivity : AppCompatActivity(),
+    NavigationView.OnNavigationItemSelectedListener {
     private lateinit var drawer: DrawerLayout
     private lateinit var adapter: CategoryListAdapter
     private lateinit var viewModel: CategoryListViewModel
@@ -53,77 +57,91 @@ class MainCategoryListActivity : AppCompatActivity(), NavigationView.OnNavigatio
         navigationView.setNavigationItemSelectedListener(this) //todo что тут должно быть вместо this ?
         navigationView.setCheckedItem(R.id.nav_category)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recycler_category)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        val contentView = findViewById<View>(R.id.contentViewCategoryList)
+        val progressBarView = findViewById<View>(R.id.includeProgressBar)
+        val errorView = findViewById<View>(R.id.includeError)
 
-        val progressBar = findViewById<View>(R.id.includeProgressBar)
-        val error = findViewById<View>(R.id.includeError)
 
-        try {
-            lifecycleScope.launch {
-                progressBar.isVisible = true
-                error.isVisible = false
-                recyclerView.isVisible = false
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.stateFlow.onEach { state ->
+                    when (state.contentState) {
+                        ContentState.Idle,
+                        ContentState.Loading -> {
+                            contentView.visibility = View.GONE
+                            progressBarView.visibility = View.VISIBLE
+                            errorView.visibility = View.GONE
+                        }
+                        ContentState.Done -> {
+                            contentView.visibility = View.VISIBLE
+                            progressBarView.visibility = View.GONE
+                            errorView.visibility - View.GONE
+                        }
+                        ContentState.Error -> {
+                            contentView.visibility = View.GONE
+                            progressBarView.visibility = View.GONE
+                            errorView.visibility = View.VISIBLE
+                        }
 
-                delay(50)
-                val data = viewModel.getCategoryEntity()
-
-                adapter = CategoryListAdapter(data.categoryList, this@MainCategoryListActivity)
-                recyclerView.adapter = adapter
-                progressBar.isVisible = false
-                recyclerView.isVisible = true
-
-                val searchView = findViewById<SearchView>(R.id.searchViewCategory)
-                val searchButton = findViewById<ActionMenuItemView>(R.id.action_search_category)
-                searchButton.setOnClickListener {
-                    if (!searchView.isVisible) {
-                        searchView.visibility = View.VISIBLE
-                    } else {
-                        adapter.setChangedCategoryEntity(data.categoryList)
-                        searchView.visibility = View.INVISIBLE
                     }
+                    //todo если не заработает попробовать убрать рекуклер из скоупа
+                    //create recyclerview
+                    val recyclerView = findViewById<RecyclerView>(R.id.recycler_category)
+                    recyclerView.setHasFixedSize(true)
+                    recyclerView.layoutManager = LinearLayoutManager(this@MainCategoryListActivity)
+                    adapter = CategoryListAdapter(
+                        state.categoryListEntity?.categoryList,
+                        this@MainCategoryListActivity
+                    )
+                    recyclerView.adapter = adapter
+
+                    //search button and view in toolbar
+                    val searchView = findViewById<SearchView>(R.id.searchViewCategory)
+                    val searchButton = findViewById<ActionMenuItemView>(R.id.action_search_category)
+                    searchButton.setOnClickListener {
+                        if (!searchView.isVisible) {
+                            searchView.visibility = View.VISIBLE
+                        } else {
+                            adapter.setChangedCategoryEntity(state.categoryListEntity?.categoryList)
+                            searchView.visibility = View.INVISIBLE
+                        }
+                    }
+
+                    //search logic
+                    searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                        override fun onQueryTextSubmit(query: String?): Boolean {
+                            return false
+                        }
+
+                        override fun onQueryTextChange(query: String?): Boolean {
+                            adapter.setChangedCategoryEntity(
+                                viewModel.getFilteredCategoryList(query).categoryList
+                            )
+                            return true
+                        }
+                    })
+
+
+                    val bottomSheetFragment = BottomSheetFragment(
+                        callbackSortAscendingByName = {
+                            adapter.setChangedCategoryEntity(
+                                viewModel.getCategoryListSortedAscendingByName().categoryList
+                            )
+                        },
+                        callbackSortDescendingByName = {
+                            adapter.setChangedCategoryEntity(
+                                viewModel.getCategoryListSortedDescendingByName().categoryList
+                            )
+                        }
+                    )
+                    val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_category)
+                    sortButton.setOnClickListener {
+                        bottomSheetFragment.show(supportFragmentManager, "BottomSheetDialog")
+                    }
+
+
                 }
-
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        return false
-                    }
-
-                    override fun onQueryTextChange(newText: String?): Boolean {
-                        adapter.setChangedCategoryEntity(
-                            viewModel.interactor.filterCategoryList(newText, data).categoryList
-                        )
-                        return true
-                    }
-                }
-                )
-                val bottomSheetFragment = BottomSheetFragment(
-                    callbackSortAscendingByName = {
-                        adapter.setChangedCategoryEntity(
-                            viewModel.interactor.sortByName(data).categoryList)
-                    },
-                    callbackSortDescendingByName = {
-                        adapter.setChangedCategoryEntity(
-                            viewModel.interactor.sortDescendingByName(data).categoryList
-                        )
-                    }
-                )
-                val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_category)
-                sortButton.setOnClickListener {
-                    bottomSheetFragment.show(supportFragmentManager, "BottomSheetDialog")
-                }
-
-
-
-
             }
-        } catch (throwable: Throwable) {
-            progressBar.isVisible = false
-            error.isVisible = true
-            recyclerView.isVisible = false
-
-            //TODO доделать, чтобы не вылетало при отключении сети
         }
 
 

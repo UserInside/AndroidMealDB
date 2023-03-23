@@ -32,7 +32,7 @@
         </androidx.appcompat.widget.Toolbar>
 
         <FrameLayout
-            android:id="@+id/contentViewMealList"
+            android:id="@+id/contentViewCategoryList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -43,6 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbars="vertical"
+
                 android:verticalScrollbarPosition="right"
                 tools:listitem="@layout/recyclerview_categoryitem" />
 
