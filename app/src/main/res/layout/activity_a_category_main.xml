@@ -49,11 +49,15 @@
 
             <include
                 android:id="@+id/includeProgressBar"
-                layout="@layout/progress_bar" />
+                layout="@layout/progress_bar"
+                android:visibility="gone"
+                />
 
             <include
                 android:id="@+id/includeError"
-                layout="@layout/error" />
+                layout="@layout/error"
+                android:visibility="gone"
+                />
 
         </FrameLayout>
 

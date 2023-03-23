@@ -61,7 +61,7 @@ class CategoryListViewModel : ViewModel() {
     }
 
     fun getFilteredCategoryList(query: String?) : CategoryListEntity {
-        return interactor.filterCategoryList(query, _stateFlow.value.categoryListEntity)
+        return interactor.filterCategoryList(query)
     }
 
 

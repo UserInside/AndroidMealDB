@@ -16,13 +16,11 @@
                 android:id="@+id/nav_category"
                 android:icon="@drawable/ic_category"
                 android:title="Category" />
-            <item
-                android:id="@+id/nav_ingredients"
-                android:icon="@drawable/ic_ingredients"
-                android:title="Ingredients" />
+
             </group>
 
         </menu>
+
     </item>
 
 </menu>
