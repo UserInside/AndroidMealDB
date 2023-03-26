@@ -22,7 +22,7 @@ import receipt.domain.RecipeInteractor
 
 class RecipeViewModel(
     private val context: Context,
-    private val mealId: String?,
+    val mealId: String?,
 ) : ViewModel() {
 
     private var _stateFlow = MutableStateFlow(RecipeUiState())

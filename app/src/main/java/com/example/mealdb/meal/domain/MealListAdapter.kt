@@ -38,6 +38,7 @@ class MealListAdapter(
 
     override fun onBindViewHolder(holder: MealViewHolder, position: Int) {
         val item = mealList?.meals!![position]
+        val image = item.strMealThumb
         Glide.with(mContext)
             .load("${item.strMealThumb}/preview")
             .placeholder(R.drawable.baseline_hourglass_bottom_24_black)
@@ -49,7 +50,7 @@ class MealListAdapter(
             val recipeActivity = Intent(mContext, RecipeActivity::class.java)
             recipeActivity.putExtra("mealName", item.strMeal)
             recipeActivity.putExtra("mealId", item.idMeal)
-            recipeActivity.putExtra("mealThumbnail", item.strMealThumb)
+            recipeActivity.putExtra("mealThumbnail", (item.strMealThumb) )
             mContext.startActivity(recipeActivity)
         }
     }

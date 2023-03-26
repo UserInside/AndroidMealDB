@@ -175,8 +175,12 @@ class MainCategoryListActivity : AppCompatActivity(),
                 }
             }
             R.id.nav_category -> {
-                if (areaFragment != null && areaFragment.isVisible) {
-                    //todo вернуть активити из ареа фрагмента
+                if (areaFragment != null) {
+                    if (areaFragment.isVisible) {
+                        //todo сделать возврат к активити
+                    } else {
+                        drawer.closeDrawer(GravityCompat.START)
+                    }
                 } else {
                     drawer.closeDrawer(GravityCompat.START)
                 }

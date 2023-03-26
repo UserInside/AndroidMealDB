@@ -115,8 +115,8 @@ class MealListActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater       //что кладем в переменную?
-        inflater.inflate(R.menu.overflow_menu_meal, menu)
+//        val inflater: MenuInflater = menuInflater       //что кладем в переменную?
+        menuInflater.inflate(R.menu.overflow_menu_meal, menu)
         return true
     }
 

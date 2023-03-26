@@ -2,7 +2,6 @@ package com.example.mealdb.recipe.presentation
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -20,19 +19,21 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 
-
 class RecipeActivity : AppCompatActivity() {
     private lateinit var viewModel: RecipeViewModel
+    private lateinit var mealName: String
+    private lateinit var mealId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_c_recipe)
-        setSupportActionBar(findViewById(R.id.appBar))
 
-        val mealName = intent.getStringExtra("mealName")
-        val mealId = intent.getStringExtra("mealId")
-        val mealThumbnail = intent.getStringExtra("mealThumbnail")
+        mealName = intent.getStringExtra("mealName") ?: ""
+        mealId = intent.getStringExtra("mealId") ?: ""
+
+        setSupportActionBar(findViewById(R.id.appBar))
         supportActionBar?.title = mealName
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewModel = ViewModelProvider(
             this, RecipeViewModelFactory(this, mealId)
@@ -58,24 +59,20 @@ class RecipeActivity : AppCompatActivity() {
                     progressView?.visibility = View.VISIBLE
                     errorView?.visibility = View.GONE
                     contentView?.visibility = View.GONE
-                    Log.i("OOps Activity", "state - loading")
                 }
                 ContentState.Error -> {
                     progressView?.visibility = View.GONE
                     errorView?.visibility = View.VISIBLE
                     contentView?.visibility = View.GONE
-                    Log.i("OOps Activity", "state - error")
                 }
                 ContentState.Done -> {
                     progressView?.visibility = View.GONE
                     errorView?.visibility = View.GONE
                     contentView?.visibility = View.VISIBLE
-                    Log.i("OOps Activity", "state - done")
                 }
             }
 
             image?.let { img ->
-                Log.i("OOps Activity", "loading image by URI")
                 Glide.with(this@RecipeActivity)
                     .load(state.foodImage)
                     .placeholder(R.drawable.baseline_hourglass_bottom_24_black)
@@ -83,14 +80,14 @@ class RecipeActivity : AppCompatActivity() {
                     .fallback(R.drawable.baseline_visibility_off_24_black)
                     .into(img)
             }
-            image.setOnClickListener{
+            image.setOnClickListener {
                 viewModel.openImage()
             }
 
             prepare?.text = "${state.recipeItem?.strInstructions}"
 
             country.text = state.recipeItem?.strArea
-            country.setOnClickListener{
+            country.setOnClickListener {
                 viewModel.openRecipeListByArea()
             }
 
@@ -112,26 +109,51 @@ class RecipeActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.share_menu, menu)
-        return super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.overflow_menu_recipe, menu)
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.shareButton) {
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.type = "text/plain"
-            shareIntent.putExtra(Intent.EXTRA_TEXT, "test share button")
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "testim subject")
-            startActivity(Intent.createChooser(shareIntent, ""))
+        val mealId = viewModel.stateFlow.value.recipeItem?.idMeal
+        val strMeal = viewModel.stateFlow.value.recipeItem?.strMeal
+
+        when (item.itemId) {
+            R.id.shareButton -> {
+
+                val shareIntent = Intent(Intent.ACTION_SEND) //если URI передать отсюда, то активити сразу его ловит и открывает в себе же, обновляя страницу с рецептом.
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "http://com.example.mealdb/recipe/53013")
+//                shareIntent.putExtra("mealName", viewModel.stateFlow.value.recipeItem?.strMeal)
+//                shareIntent.putExtra("mealId", viewModel.stateFlow.value.recipeItem?.idMeal)
+//                shareIntent.putExtra("mealId", "53013")
+                startActivity(Intent.createChooser(shareIntent, "wow mama chooser"))
+
+            }
 
         }
         return super.onOptionsItemSelected(item)
     }
 
+//    override fun onNewIntent(intent: Intent) {
+//        handleIntent(intent)
+//        super.onNewIntent(intent)
+
+//    }
+
+    private fun handleIntent(intent: Intent) {
+//        if (intent.action == Intent.ACTION_VIEW) {
+//            intent.setClass(this@RecipeActivity, RecipeActivity::class.java)
+//
+//            mealId = intent.data?.lastPathSegment ?: ""
+//
+//            intent.putExtra("mealId", mealId)
+//            intent.putExtra("mealName", "WOW rabotaet")
+//            startActivity(intent)
+//        }
+
+
+    }
 }
-// TODO добавить диплинк для sharebutton
+
+
