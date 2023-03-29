@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view">
 
 
@@ -22,5 +23,27 @@
         </menu>
 
     </item>
+
+    <item android:title="Choose theme" >
+
+        <menu>
+            <group
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/theme_light"
+                    android:icon="@drawable/ic_theme_day"
+                    android:title="Light" />
+                <item
+                    android:id="@+id/theme_dark"
+                    android:icon="@drawable/ic_theme_night"
+                    android:title="Dark" />
+
+            </group>
+
+        </menu>
+
+
+    </item>
+
 
 </menu>

@@ -1,15 +1,18 @@
 package com.example.mealdb.category.presentation
 
-import android.nfc.Tag
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
+import android.widget.RadioButton
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -38,6 +41,7 @@ class MainCategoryListActivity : AppCompatActivity(),
 
     override fun onCreate(saveInstanceState: Bundle?) {
         super.onCreate(saveInstanceState)
+
         setContentView(R.layout.activity_a_category_main)
 
         val appBar = findViewById<Toolbar>(R.id.appBar)
@@ -155,7 +159,6 @@ class MainCategoryListActivity : AppCompatActivity(),
         })
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.overflow_menu_category, menu)
@@ -164,20 +167,27 @@ class MainCategoryListActivity : AppCompatActivity(),
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val areaFragment = supportFragmentManager.findFragmentByTag("AreaFragment")
+
         when (item.itemId) {
             R.id.nav_area -> {
                 if (areaFragment != null && areaFragment.isVisible) {
                     drawer.closeDrawer(GravityCompat.START)
                 } else {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.contentViewCategoryList, CountryListFragment(),"AreaFragment")
+                        .replace(
+                            R.id.contentViewCategoryList,
+                            CountryListFragment(),
+                            "AreaFragment"
+                        )
                         .commit()
                 }
             }
             R.id.nav_category -> {
                 if (areaFragment != null) {
                     if (areaFragment.isVisible) {
-                        //todo сделать возврат к активити
+
+                        supportFragmentManager.beginTransaction().remove(areaFragment).commit()
+                        //todo сделать возврат к активити. Активити вроде возвращает, но тулбар ломается
                     } else {
                         drawer.closeDrawer(GravityCompat.START)
                     }
@@ -185,10 +195,25 @@ class MainCategoryListActivity : AppCompatActivity(),
                     drawer.closeDrawer(GravityCompat.START)
                 }
             }
+            R.id.theme_light -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                this.recreate()
+                Log.i("radio", "Light clicked")
+                drawer.closeDrawer(GravityCompat.START)
 
+            }
+            R.id.theme_dark -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                recreate()
+                Log.i("radio", "Dark clicked")
+                drawer.closeDrawer(GravityCompat.START)
+            }
         }
+
         drawer.closeDrawer(GravityCompat.START)
         return true
-    }
 
+    }
 }
+
+// после переключения темы перестает работать тулбар... хм...
