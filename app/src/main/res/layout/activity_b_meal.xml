@@ -24,7 +24,7 @@
             app:iconifiedByDefault="false"
             app:queryBackground="@android:color/transparent"
             app:queryHint="Enter meal name..."
-            app:searchIcon="@drawable/baseline_search_24_white" />
+            app:searchIcon="@drawable/ic_search_button" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#F5F5F5">
+        android:background="@color/colorBackground">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_meal"

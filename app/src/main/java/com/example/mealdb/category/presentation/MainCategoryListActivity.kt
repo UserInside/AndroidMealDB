@@ -85,7 +85,6 @@ class MainCategoryListActivity : AppCompatActivity(),
                         progressBarView.visibility = View.GONE
                         errorView.visibility = View.VISIBLE
                     }
-
                 }
 
                 //create recyclerview
@@ -98,53 +97,8 @@ class MainCategoryListActivity : AppCompatActivity(),
                 )
                 recyclerView.adapter = adapter
 
-                //search button and view in toolbar
-                val searchView = findViewById<SearchView>(R.id.searchViewCategory)
-                val searchButton = findViewById<ActionMenuItemView>(R.id.action_search_category)
-                searchButton?.setOnClickListener {
-                    if (!searchView.isVisible) {
-                        searchView.visibility = View.VISIBLE
-                    } else {
-                        adapter.setChangedCategoryEntity(state.categoryListEntity?.categoryList)
-                        searchView.visibility = View.INVISIBLE
-                    }
-                }
-
-                //search logic
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        return false
-                    }
-
-                    override fun onQueryTextChange(query: String?): Boolean {
-                        adapter.setChangedCategoryEntity(
-                            viewModel.getFilteredCategoryList(query).categoryList
-                        )
-                        return true
-                    }
-                })
-
-
-                val bottomSheetFragment = BottomSheetFragment(
-                    callbackSortAscendingByName = {
-                        adapter.setChangedCategoryEntity(
-                            viewModel.getCategoryListSortedAscendingByName().categoryList
-                        )
-                    },
-                    callbackSortDescendingByName = {
-                        adapter.setChangedCategoryEntity(
-                            viewModel.getCategoryListSortedDescendingByName().categoryList
-                        )
-                    }
-                )
-                val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_category)
-                sortButton?.setOnClickListener {
-                    bottomSheetFragment.show(supportFragmentManager, "BottomSheetDialog")
-                }
             }.launchIn(lifecycleScope)
         }
-
-
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -163,6 +117,53 @@ class MainCategoryListActivity : AppCompatActivity(),
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.overflow_menu_category, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_search_category -> {
+                val searchView = findViewById<SearchView>(R.id.searchViewCategory)
+                val searchButton = findViewById<ActionMenuItemView>(R.id.action_search_category)
+                searchButton?.setOnClickListener {
+                    if (!searchView.isVisible) {
+                        searchView.visibility = View.VISIBLE
+                    } else {
+                        searchView.visibility = View.INVISIBLE
+                    }
+                }
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        return false
+                    }
+
+                    override fun onQueryTextChange(query: String?): Boolean {
+                        adapter.setChangedCategoryEntity(
+                            viewModel.getFilteredCategoryList(query).categoryList
+                        )
+                        return true
+                    }
+                })
+            }
+            R.id.action_sort_category -> {
+                val bottomSheetFragment = BottomSheetFragment(
+                    callbackSortAscendingByName = {
+                        adapter.setChangedCategoryEntity(
+                            viewModel.getCategoryListSortedAscendingByName().categoryList
+                        )
+                    },
+                    callbackSortDescendingByName = {
+                        adapter.setChangedCategoryEntity(
+                            viewModel.getCategoryListSortedDescendingByName().categoryList
+                        )
+                    }
+                )
+                val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_category)
+                sortButton?.setOnClickListener {
+                    bottomSheetFragment.show(supportFragmentManager, "BottomSheetDialog")
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -185,9 +186,7 @@ class MainCategoryListActivity : AppCompatActivity(),
             R.id.nav_category -> {
                 if (areaFragment != null) {
                     if (areaFragment.isVisible) {
-
                         supportFragmentManager.beginTransaction().remove(areaFragment).commit()
-                        //todo сделать возврат к активити. Активити вроде возвращает, но тулбар ломается
                     } else {
                         drawer.closeDrawer(GravityCompat.START)
                     }
@@ -197,15 +196,13 @@ class MainCategoryListActivity : AppCompatActivity(),
             }
             R.id.theme_light -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                this.recreate()
-                Log.i("radio", "Light clicked")
+                recreate()
                 drawer.closeDrawer(GravityCompat.START)
 
             }
             R.id.theme_dark -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 recreate()
-                Log.i("radio", "Dark clicked")
                 drawer.closeDrawer(GravityCompat.START)
             }
         }

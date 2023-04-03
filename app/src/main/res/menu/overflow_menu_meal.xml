@@ -4,19 +4,19 @@
     <item
         android:id="@+id/action_share_meal"
         android:title="share"
-        android:icon="@drawable/baseline_share_24_white"
+        android:icon="@drawable/ic_share_button"
         app:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/action_search_meal"
         android:title="search"
-        android:icon="@drawable/baseline_search_24_white"
+        android:icon="@drawable/ic_search_button"
         app:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/action_sort_meal"
         android:title="sort"
-        android:icon="@drawable/baseline_filter_list_24_white"
+        android:icon="@drawable/ic_sort_button"
         app:showAsAction="ifRoom"
         />
 </menu>

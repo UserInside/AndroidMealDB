@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:paddingTop="8dp"
-            android:src="@drawable/dragger_24_white" />
+            android:src="@drawable/dragger" />
 
         <TextView
             android:layout_width="match_parent"
