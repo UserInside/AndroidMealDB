@@ -124,13 +124,8 @@ class RecipeActivity : AppCompatActivity() {
                 val shareIntent = Intent(Intent.ACTION_SEND) //если URI передать отсюда, то активити сразу его ловит и открывает в себе же, обновляя страницу с рецептом.
                 shareIntent.type = "text/plain"
                 shareIntent.putExtra(Intent.EXTRA_TEXT, "http://com.example.mealdb/recipe/$mealId")
-//                shareIntent.putExtra("mealName", viewModel.stateFlow.value.recipeItem?.strMeal)
-//                shareIntent.putExtra("mealId", viewModel.stateFlow.value.recipeItem?.idMeal)
-//                shareIntent.putExtra("mealId", "53013")
                 startActivity(Intent.createChooser(shareIntent, "wow mama chooser"))
-
             }
-
         }
         return super.onOptionsItemSelected(item)
     }

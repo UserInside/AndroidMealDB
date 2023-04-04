@@ -28,12 +28,28 @@
             </intent-filter>
 
         </activity>
+
         <activity
             android:name=".meal.presentation.MealListActivity"
             android:configChanges="uiMode"
-            android:exported="false"
+            android:exported="true"
             android:launchMode="singleTop"
-            android:parentActivityName=".category.presentation.MainCategoryListActivity" />
+            android:parentActivityName=".category.presentation.MainCategoryListActivity" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:scheme="https"
+                    android:host="www.themealdb.com"
+                     />
+<!--                android:pathPattern="/api/json/v1/1/filter.php?*"-->
+            </intent-filter>
+
+        </activity>
+
 
         <activity
             android:name=".recipe.presentation.RecipeActivity"
@@ -56,6 +72,7 @@
                     android:scheme="http" />
 
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 

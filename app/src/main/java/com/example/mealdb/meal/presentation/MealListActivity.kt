@@ -1,8 +1,10 @@
 package com.example.mealdb.meal.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.ActionMenuItem
@@ -74,13 +76,41 @@ class MealListActivity : AppCompatActivity() {
                 adapter = MealListAdapter(state.mealListEntity?.mealList, this@MealListActivity)
                 recyclerView.adapter = adapter
 
+            }.launchIn(lifecycleScope)
+        }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        val inflater: MenuInflater = menuInflater       //что кладем в переменную?
+        menuInflater.inflate(R.menu.overflow_menu_meal, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.action_share_meal -> {
+                var prefix = ""
+                when (viewModel.flag) {
+                    "category" -> prefix = "c="
+                    "area" -> prefix = "a="
+                    "ingredient" -> prefix = "i="
+
+                }
+                val categoryName = viewModel.categoryName
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "https://www.themealdb.com/api/json/v1/1/filter.php?$prefix$categoryName")
+                startActivity(Intent.createChooser(shareIntent, "seems it works"))
+            }
+            R.id.action_search_meal -> {
                 val searchView = findViewById<SearchView>(R.id.searchViewMealList)
                 val fuckingSearchButton = findViewById<ActionMenuItemView>(R.id.action_search_meal)
                 fuckingSearchButton?.setOnClickListener { //разобраться почему не работает без знака вопроса
                     if (!searchView.isVisible) {
                         searchView.visibility = View.VISIBLE
                     } else {
-                        adapter.setChangedMealEntity(state.mealListEntity?.mealList)
+//                        adapter.setChangedMealEntity(state.mealListEntity?.mealList)
                         searchView.visibility = View.INVISIBLE
                     }
                 }
@@ -96,7 +126,8 @@ class MealListActivity : AppCompatActivity() {
                         return true
                     }
                 })
-
+            }
+            R.id.action_sort_meal -> {
                 val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_meal)
                 val bottomSheetFragment = BottomSheetFragment(
                     callbackSortAscendingByName = {
@@ -108,16 +139,9 @@ class MealListActivity : AppCompatActivity() {
                 sortButton?.setOnClickListener {
                     bottomSheetFragment.show(supportFragmentManager, "bottomSheetInMealList")
                 }
-
-            }.launchIn(lifecycleScope)
+            }
         }
-
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val inflater: MenuInflater = menuInflater       //что кладем в переменную?
-        menuInflater.inflate(R.menu.overflow_menu_meal, menu)
-        return true
+        return super.onOptionsItemSelected(item)
     }
 
 }
