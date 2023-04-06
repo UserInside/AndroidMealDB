@@ -68,7 +68,7 @@
 
                 <data
                     android:host="com.example.mealdb"
-                    android:path="/recipe/53013"
+                    android:pathPrefix="/recipe/"
                     android:scheme="http" />
 
             </intent-filter>

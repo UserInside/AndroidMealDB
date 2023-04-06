@@ -1,7 +1,9 @@
 package com.example.mealdb.recipe.presentation
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -26,10 +28,16 @@ class RecipeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        handleIntent(intent)
+
         setContentView(R.layout.activity_c_recipe)
 
+        if (!this::mealId.isInitialized) {
+            mealId = intent.getStringExtra("mealId") ?: ""
+        }
         mealName = intent.getStringExtra("mealName") ?: ""
-        mealId = intent.getStringExtra("mealId") ?: ""
+
 
         setSupportActionBar(findViewById(R.id.appBar))
         supportActionBar?.title = mealName
@@ -130,22 +138,32 @@ class RecipeActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-//    override fun onNewIntent(intent: Intent) {
-//        handleIntent(intent)
-//        super.onNewIntent(intent)
+    override fun onNewIntent(intent: Intent) {
+        Log.i("onNewIntent", "1")
+        handleIntent(intent)
+        Log.i("onNewIntent", "2")
+        super.onNewIntent(intent)
+        Log.i("onNewIntent", "3")
 
-//    }
+
+    }
 
     private fun handleIntent(intent: Intent) {
-//        if (intent.action == Intent.ACTION_VIEW) {
-//            intent.setClass(this@RecipeActivity, RecipeActivity::class.java)
-//
-//            mealId = intent.data?.lastPathSegment ?: ""
-//
-//            intent.putExtra("mealId", mealId)
-//            intent.putExtra("mealName", "WOW rabotaet")
-//            startActivity(intent)
-//        }
+        Log.i("handleIntent", "1")
+
+        if (intent.action == Intent.ACTION_VIEW) {
+            Log.i("handleIntent", "2")
+
+            intent.setClass(this@RecipeActivity, RecipeActivity::class.java)
+
+            mealId = intent.data?.lastPathSegment ?: ""
+
+            intent.putExtra("mealId", mealId)
+            intent.putExtra("mealName", "WOW rabotaet")
+            startActivity(intent)
+
+        }
+
 
 
     }
