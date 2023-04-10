@@ -23,7 +23,8 @@ import kotlinx.coroutines.flow.onEach
 
 class RecipeActivity : AppCompatActivity() {
     private lateinit var viewModel: RecipeViewModel
-    private lateinit var mealName: String
+
+    //        private lateinit var mealName: String
     private lateinit var mealId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,19 +34,18 @@ class RecipeActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_c_recipe)
 
-        if (!this::mealId.isInitialized) {
-            mealId = intent.getStringExtra("mealId") ?: ""
-        }
-        mealName = intent.getStringExtra("mealName") ?: ""
+//        if (!this::mealId.isInitialized) {
+//            mealId = intent.getStringExtra("mealId") ?: ""
+//        }
 
-
-        setSupportActionBar(findViewById(R.id.appBar))
-        supportActionBar?.title = mealName
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        mealId = intent.getStringExtra("mealId") ?: ""
 
         viewModel = ViewModelProvider(
             this, RecipeViewModelFactory(this, mealId)
         ).get(RecipeViewModel::class.java)
+
+        setSupportActionBar(findViewById(R.id.appBar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val image = findViewById<ImageView>(R.id.imageMealInRecipe)
         val prepare = findViewById<TextView>(R.id.prepare)
@@ -79,6 +79,8 @@ class RecipeActivity : AppCompatActivity() {
                     contentView?.visibility = View.VISIBLE
                 }
             }
+
+            supportActionBar?.title = state.recipeItem?.strMeal
 
             image?.let { img ->
                 Glide.with(this@RecipeActivity)
@@ -124,12 +126,12 @@ class RecipeActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val mealId = viewModel.stateFlow.value.recipeItem?.idMeal
-        val strMeal = viewModel.stateFlow.value.recipeItem?.strMeal
+//        val strMeal = viewModel.stateFlow.value.recipeItem?.strMeal
 
         when (item.itemId) {
             R.id.shareButton -> {
-
-                val shareIntent = Intent(Intent.ACTION_SEND) //если URI передать отсюда, то активити сразу его ловит и открывает в себе же, обновляя страницу с рецептом.
+                val shareIntent =
+                    Intent(Intent.ACTION_SEND) //если URI передать отсюда, то активити сразу его ловит и открывает в себе же, обновляя страницу с рецептом.
                 shareIntent.type = "text/plain"
                 shareIntent.putExtra(Intent.EXTRA_TEXT, "http://com.example.mealdb/recipe/$mealId")
                 startActivity(Intent.createChooser(shareIntent, "wow mama chooser"))
@@ -139,33 +141,29 @@ class RecipeActivity : AppCompatActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
-        Log.i("onNewIntent", "1")
+        Log.i("onNewIntentWOW", "1")
         handleIntent(intent)
-        Log.i("onNewIntent", "2")
+        Log.i("onNewIntentWOW", "2")
         super.onNewIntent(intent)
-        Log.i("onNewIntent", "3")
-
+        Log.i("onNewIntentWOW", "3")
 
     }
 
     private fun handleIntent(intent: Intent) {
-        Log.i("handleIntent", "1")
+        Log.i("handleIntentWOW", "1")
 
         if (intent.action == Intent.ACTION_VIEW) {
-            Log.i("handleIntent", "2")
+            Log.i("handleIntentWOW", "2")
+            intent.action = null
 
             intent.setClass(this@RecipeActivity, RecipeActivity::class.java)
 
             mealId = intent.data?.lastPathSegment ?: ""
 
             intent.putExtra("mealId", mealId)
-            intent.putExtra("mealName", "WOW rabotaet")
-            startActivity(intent)
+            this@RecipeActivity.startActivity(intent)
 
         }
-
-
-
     }
 }
 

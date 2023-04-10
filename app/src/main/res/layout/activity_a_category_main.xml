@@ -17,7 +17,6 @@
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
             >
 
             <androidx.appcompat.widget.SearchView
@@ -25,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:visibility="invisible"
+                android:visibility="gone"
                 app:iconifiedByDefault="false"
                 app:queryBackground="@android:color/transparent"
                 app:queryHint="Enter category name..." />
@@ -45,7 +44,8 @@
                 android:scrollbars="vertical"
 
                 android:verticalScrollbarPosition="right"
-                tools:listitem="@layout/recyclerview_categoryitem" />
+                tools:listitem="@layout/recyclerview_categoryitem"
+                />
 
             <include
                 android:id="@+id/includeProgressBar"

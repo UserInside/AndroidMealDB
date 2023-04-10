@@ -2,6 +2,7 @@ package com.example.mealdb.meal.presentation
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -32,10 +33,10 @@ class MealListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_b_meal)
         val receivedCategoryName = intent.getStringExtra("categoryName")
         val receivedFlag = intent.getStringExtra("flag")
-        val appBar = findViewById<Toolbar>(R.id.appBar2)
-        setSupportActionBar(appBar)
+
+        setSupportActionBar(findViewById<Toolbar>(R.id.appBar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        this.title = when (receivedFlag) {
+        supportActionBar?.title = when (receivedFlag) {
             "category" -> "Category: $receivedCategoryName"
             "area" -> "$receivedCategoryName cuisine"
             "ingredient" -> "Ingredient: $receivedCategoryName"
@@ -49,35 +50,36 @@ class MealListActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(
             this, MealListViewModelFactory(
-                this, receivedCategoryName, receivedFlag)
+                this, receivedCategoryName, receivedFlag
+            )
         ).get(MealListViewModel::class.java)
 
-        lifecycleScope.launch {
-            viewModel.stateFlow.onEach { state ->
-                when (state.contentState) {
-                    ContentState.Idle,
-                    ContentState.Loading -> {
-                        progressView.visibility = View.VISIBLE
-                        errorView.visibility = View.GONE
-                        contentView.visibility = View.GONE
-                    }
-                    ContentState.Error -> {
-                        progressView.visibility = View.GONE
-                        errorView.visibility = View.VISIBLE
-                        contentView.visibility = View.GONE
-                    }
-                    ContentState.Done -> {
-                        progressView.visibility = View.GONE
-                        errorView.visibility = View.GONE
-                        contentView.visibility = View.VISIBLE
-                    }
+
+        viewModel.stateFlow.onEach { state ->
+            when (state.contentState) {
+                ContentState.Idle,
+                ContentState.Loading -> {
+                    progressView.visibility = View.VISIBLE
+                    errorView.visibility = View.GONE
+                    contentView.visibility = View.GONE
                 }
+                ContentState.Error -> {
+                    progressView.visibility = View.GONE
+                    errorView.visibility = View.VISIBLE
+                    contentView.visibility = View.GONE
+                }
+                ContentState.Done -> {
+                    progressView.visibility = View.GONE
+                    errorView.visibility = View.GONE
+                    contentView.visibility = View.VISIBLE
+                }
+            }
 
-                adapter = MealListAdapter(state.mealListEntity?.mealList, this@MealListActivity)
-                recyclerView.adapter = adapter
+            adapter = MealListAdapter(state.mealListEntity?.mealList, this@MealListActivity)
+            recyclerView.adapter = adapter
 
-            }.launchIn(lifecycleScope)
-        }
+        }.launchIn(lifecycleScope)
+
 
     }
 
@@ -88,7 +90,7 @@ class MealListActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.action_share_meal -> {
                 var prefix = ""
                 when (viewModel.flag) {
@@ -100,7 +102,10 @@ class MealListActivity : AppCompatActivity() {
                 val categoryName = viewModel.categoryName
                 val shareIntent = Intent(Intent.ACTION_SEND)
                 shareIntent.type = "text/plain"
-                shareIntent.putExtra(Intent.EXTRA_TEXT, "https://www.themealdb.com/api/json/v1/1/filter.php?$prefix$categoryName")
+                shareIntent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    "https://www.themealdb.com/api/json/v1/1/filter.php?$prefix$categoryName"
+                )
                 startActivity(Intent.createChooser(shareIntent, "seems it works"))
             }
             R.id.action_search_meal -> {
@@ -131,7 +136,8 @@ class MealListActivity : AppCompatActivity() {
                 val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_meal)
                 val bottomSheetFragment = BottomSheetFragment(
                     callbackSortAscendingByName = {
-                        adapter.setChangedMealEntity(viewModel.getMealListEntitySortedAscendingByName()?.mealList)},
+                        adapter.setChangedMealEntity(viewModel.getMealListEntitySortedAscendingByName()?.mealList)
+                    },
                     callbackSortDescendingByName = {
                         adapter.setChangedMealEntity(viewModel.getMealListEntitySortedDescendingByName()?.mealList)
                     })

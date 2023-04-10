@@ -8,10 +8,9 @@
     tools:context=".meal.presentation.MealListActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/appBar2"
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:navigationIcon="?attr/actionModeCloseDrawable"
         >
 
         <androidx.appcompat.widget.SearchView
@@ -20,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:gravity="start"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:iconifiedByDefault="false"
             app:queryBackground="@android:color/transparent"
             app:queryHint="Enter meal name..."

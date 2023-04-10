@@ -48,7 +48,6 @@ class MealListAdapter(
         holder.textView.text = item.strMeal
         holder.itemView.setOnClickListener {
             val recipeActivity = Intent(mContext, RecipeActivity::class.java)
-            recipeActivity.putExtra("mealName", item.strMeal)
             recipeActivity.putExtra("mealId", item.idMeal)
             recipeActivity.putExtra("mealThumbnail", (item.strMealThumb) )
             mContext.startActivity(recipeActivity)
