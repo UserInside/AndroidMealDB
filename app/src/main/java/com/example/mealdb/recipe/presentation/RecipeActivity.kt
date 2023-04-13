@@ -23,22 +23,18 @@ import kotlinx.coroutines.flow.onEach
 
 class RecipeActivity : AppCompatActivity() {
     private lateinit var viewModel: RecipeViewModel
-
-    //        private lateinit var mealName: String
     private lateinit var mealId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        handleIntent(intent)
+//        handleIntent(intent)
 
         setContentView(R.layout.activity_c_recipe)
-
+        mealId = intent.data?.lastPathSegment ?: intent.getStringExtra("mealId") ?: ""
 //        if (!this::mealId.isInitialized) {
-//            mealId = intent.getStringExtra("mealId") ?: ""
+//            mealId = intent.data?.lastPathSegment ?: intent.getStringExtra("mealId") ?: ""
 //        }
-
-        mealId = intent.getStringExtra("mealId") ?: ""
 
         viewModel = ViewModelProvider(
             this, RecipeViewModelFactory(this, mealId)
@@ -130,8 +126,7 @@ class RecipeActivity : AppCompatActivity() {
 
         when (item.itemId) {
             R.id.shareButton -> {
-                val shareIntent =
-                    Intent(Intent.ACTION_SEND) //если URI передать отсюда, то активити сразу его ловит и открывает в себе же, обновляя страницу с рецептом.
+                val shareIntent = Intent(Intent.ACTION_SEND)
                 shareIntent.type = "text/plain"
                 shareIntent.putExtra(Intent.EXTRA_TEXT, "http://com.example.mealdb/recipe/$mealId")
                 startActivity(Intent.createChooser(shareIntent, "wow mama chooser"))
@@ -140,31 +135,36 @@ class RecipeActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onNewIntent(intent: Intent) {
-        Log.i("onNewIntentWOW", "1")
-        handleIntent(intent)
-        Log.i("onNewIntentWOW", "2")
-        super.onNewIntent(intent)
-        Log.i("onNewIntentWOW", "3")
+//    override fun onNewIntent(intent: Intent) {
+//        Log.i("onNewIntentWOW", "1")
+////        handleIntent(intent)
+//        Log.i("onNewIntentWOW", "2")
+//        super.onNewIntent(intent)
+//        Log.i("onNewIntentWOW", "3")
+//        this@RecipeActivity.startActivity(intent)
+//
+//    }
+//
+//    private fun handleIntent(intent: Intent) {
+//        Log.i("handleIntentWOW", "1")
+//
+//        if (intent.action == Intent.ACTION_VIEW) {
+//            Log.i("handleIntentWOW", "2")
+//
+//
+//            intent.setClass(this@RecipeActivity, RecipeActivity::class.java)
+//
+//            mealId = intent.data?.lastPathSegment ?: ""
+//
+//            intent.putExtra("mealId", mealId)
+////            this@RecipeActivity.startActivity(intent)
+//TODO С лончмод стандарт все норм, но рецепты складываются в стек. Если поставить синглтоп, то не получается -- открываем ссылку при действующем активити,
+// то оно не обновляется. Вернее обновляется, потом назад стирается интент экшн и актуальный экран запускается повторно.
+// onNewIntent проходит один крут нормально, но затем сразу еще один с обнуленным интентэкшн. Надо пофиксить.
+//        }
+//    }
 
-    }
 
-    private fun handleIntent(intent: Intent) {
-        Log.i("handleIntentWOW", "1")
-
-        if (intent.action == Intent.ACTION_VIEW) {
-            Log.i("handleIntentWOW", "2")
-            intent.action = null
-
-            intent.setClass(this@RecipeActivity, RecipeActivity::class.java)
-
-            mealId = intent.data?.lastPathSegment ?: ""
-
-            intent.putExtra("mealId", mealId)
-            this@RecipeActivity.startActivity(intent)
-
-        }
-    }
 }
 
 

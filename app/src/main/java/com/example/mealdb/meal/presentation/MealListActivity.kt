@@ -30,9 +30,19 @@ class MealListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_b_meal)
-        val receivedCategoryName = intent.getStringExtra("categoryName")
-        val receivedFlag = intent.getStringExtra("flag")
+
+
+        val receivedFlag = when (intent.data?.queryParameterNames?.first()) {
+            "c" -> "category"
+            "a" -> "area"
+            "i" -> "ingredient"
+            else -> intent.getStringExtra("flag") ?: ""
+        }
+        val categoryName  = intent.data?.getQueryParameter(intent.data?.queryParameterNames?.first())
+        val receivedCategoryName = categoryName ?: intent.getStringExtra("categoryName") ?: ""
+
 
         setSupportActionBar(findViewById<Toolbar>(R.id.appBar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -57,8 +67,7 @@ class MealListActivity : AppCompatActivity() {
 
         viewModel.stateFlow.onEach { state ->
             when (state.contentState) {
-                ContentState.Idle,
-                ContentState.Loading -> {
+                ContentState.Idle, ContentState.Loading -> {
                     progressView.visibility = View.VISIBLE
                     errorView.visibility = View.GONE
                     contentView.visibility = View.GONE
@@ -134,13 +143,11 @@ class MealListActivity : AppCompatActivity() {
             }
             R.id.action_sort_meal -> {
                 val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_meal)
-                val bottomSheetFragment = BottomSheetFragment(
-                    callbackSortAscendingByName = {
-                        adapter.setChangedMealEntity(viewModel.getMealListEntitySortedAscendingByName()?.mealList)
-                    },
-                    callbackSortDescendingByName = {
-                        adapter.setChangedMealEntity(viewModel.getMealListEntitySortedDescendingByName()?.mealList)
-                    })
+                val bottomSheetFragment = BottomSheetFragment(callbackSortAscendingByName = {
+                    adapter.setChangedMealEntity(viewModel.getMealListEntitySortedAscendingByName()?.mealList)
+                }, callbackSortDescendingByName = {
+                    adapter.setChangedMealEntity(viewModel.getMealListEntitySortedDescendingByName()?.mealList)
+                })
 
                 sortButton?.setOnClickListener {
                     bottomSheetFragment.show(supportFragmentManager, "bottomSheetInMealList")
