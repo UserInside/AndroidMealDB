@@ -11,6 +11,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -111,7 +114,17 @@ class RecipeActivity : AppCompatActivity() {
             val textIngredientMeasure = findViewById<TextView>(R.id.ingredientMeasure)
             textIngredientMeasure.text = viewModel.getMeasuresList()
 
+            val shortcut = ShortcutInfoCompat.Builder(this, mealId)
+                .setShortLabel("${state.recipeItem?.strMeal}")
+                .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_launcher)) //TODO доделать загрузку иконок каждого блюда
+                .setIntent(Intent(Intent.ACTION_VIEW, Uri.parse("http://com.example.mealdb/recipe/$mealId")))
+                .build()
+
+            ShortcutManagerCompat.pushDynamicShortcut(this, shortcut)
+
         }.launchIn(lifecycleScope)
+
+
     }
 
 
