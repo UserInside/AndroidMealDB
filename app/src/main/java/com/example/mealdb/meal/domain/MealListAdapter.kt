@@ -1,5 +1,7 @@
 package com.example.mealdb.meal.domain
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -10,6 +12,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mealdb.R
+import com.example.mealdb.meal.presentation.MealListActivity
 import com.example.mealdb.recipe.presentation.RecipeActivity
 import meal.data.MealList
 
@@ -26,7 +29,7 @@ class MealListAdapter(
     }
 
     class MealViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageView = itemView.findViewById<ImageView>(R.id.imageMeal)
+        val imageView = itemView.findViewById<ImageView>(R.id.mealImage)
         val textView = itemView.findViewById<TextView>(R.id.textMealName)
     }
 
@@ -49,8 +52,9 @@ class MealListAdapter(
         holder.itemView.setOnClickListener {
             val recipeActivity = Intent(mContext, RecipeActivity::class.java)
             recipeActivity.putExtra("mealId", item.idMeal)
-            recipeActivity.putExtra("mealThumbnail", (item.strMealThumb) )
-            mContext.startActivity(recipeActivity)
+            recipeActivity.putExtra("mealThumbnail", (item.strMealThumb))
+            val options = ActivityOptions.makeSceneTransitionAnimation(mContext as Activity, holder.imageView, "mealImage")
+            mContext.startActivity(recipeActivity, options.toBundle())
         }
     }
 

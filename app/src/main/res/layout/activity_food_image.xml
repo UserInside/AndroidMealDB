@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:padding="21dp"
-        android:src="@drawable/ic_clear_24_black"
+        android:src="@drawable/ic_close"
         android:background="@android:color/transparent"
         />
 

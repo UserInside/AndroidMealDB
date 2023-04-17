@@ -1,5 +1,7 @@
 package com.example.mealdb.category.domain
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -60,7 +62,7 @@ class CategoryListAdapter(var categoryList: CategoryList?, context: Context) :
             val mealListActivity = Intent(mContext, MealListActivity::class.java)
             mealListActivity.putExtra("categoryName", item?.strCategory)
             mealListActivity.putExtra("flag", "category")
-            mContext.startActivity(mealListActivity)
+            mContext.startActivity(mealListActivity, ActivityOptions.makeSceneTransitionAnimation(mContext as Activity).toBundle())
         }
     }
 

@@ -30,21 +30,16 @@ class RecipeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        handleIntent(intent)
-
         setContentView(R.layout.activity_c_recipe)
+
+        setSupportActionBar(findViewById(R.id.appBar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         mealId = intent.data?.lastPathSegment ?: intent.getStringExtra("mealId") ?: ""
-//        if (!this::mealId.isInitialized) {
-//            mealId = intent.data?.lastPathSegment ?: intent.getStringExtra("mealId") ?: ""
-//        }
 
         viewModel = ViewModelProvider(
             this, RecipeViewModelFactory(this, mealId)
         ).get(RecipeViewModel::class.java)
-
-        setSupportActionBar(findViewById(R.id.appBar))
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val image = findViewById<ImageView>(R.id.imageMealInRecipe)
         val prepare = findViewById<TextView>(R.id.prepare)
@@ -123,10 +118,7 @@ class RecipeActivity : AppCompatActivity() {
             ShortcutManagerCompat.pushDynamicShortcut(this, shortcut)
 
         }.launchIn(lifecycleScope)
-
-
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.overflow_menu_recipe, menu)
@@ -135,7 +127,6 @@ class RecipeActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val mealId = viewModel.stateFlow.value.recipeItem?.idMeal
-//        val strMeal = viewModel.stateFlow.value.recipeItem?.strMeal
 
         when (item.itemId) {
             R.id.shareButton -> {
@@ -148,29 +139,7 @@ class RecipeActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-//    override fun onNewIntent(intent: Intent) {
-//        Log.i("onNewIntentWOW", "1")
-////        handleIntent(intent)
-//        Log.i("onNewIntentWOW", "2")
-//        super.onNewIntent(intent)
-//        Log.i("onNewIntentWOW", "3")
-//        this@RecipeActivity.startActivity(intent)
-//
-//    }
-//
-//    private fun handleIntent(intent: Intent) {
-//        Log.i("handleIntentWOW", "1")
-//
-//        if (intent.action == Intent.ACTION_VIEW) {
-//            Log.i("handleIntentWOW", "2")
-//
-//
-//            intent.setClass(this@RecipeActivity, RecipeActivity::class.java)
-//
-//            mealId = intent.data?.lastPathSegment ?: ""
-//
-//            intent.putExtra("mealId", mealId)
-////            this@RecipeActivity.startActivity(intent)
+
 //TODO С лончмод стандарт все норм, но рецепты складываются в стек. Если поставить синглтоп, то не получается -- открываем ссылку при действующем активити,
 // то оно не обновляется. Вернее обновляется, потом назад стирается интент экшн и актуальный экран запускается повторно.
 // onNewIntent проходит один крут нормально, но затем сразу еще один с обнуленным интентэкшн. Надо пофиксить.

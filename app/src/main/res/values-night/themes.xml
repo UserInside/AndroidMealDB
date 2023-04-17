@@ -21,9 +21,16 @@
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowEnterTransition">@transition/fade</item>
+        <item name="android:windowExitTransition">@transition/fade</item>
+
     </style>
 
 <!--    <style name="Theme.MealDB" parent="Theme.MealDB.Dark" >-->
 <!--    </style>-->
+    
 
 </resources>
