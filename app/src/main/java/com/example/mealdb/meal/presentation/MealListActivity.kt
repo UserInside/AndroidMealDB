@@ -2,13 +2,10 @@ package com.example.mealdb.meal.presentation
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -22,7 +19,6 @@ import com.example.mealdb.R
 import com.example.mealdb.meal.domain.MealListAdapter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 class MealListActivity : AppCompatActivity() {
     lateinit var viewModel: MealListViewModel
@@ -40,7 +36,7 @@ class MealListActivity : AppCompatActivity() {
             "i" -> "ingredient"
             else -> intent.getStringExtra("flag") ?: ""
         }
-        val categoryName  = intent.data?.getQueryParameter(intent.data?.queryParameterNames?.first())
+        val categoryName = intent.data?.getQueryParameter(intent.data?.queryParameterNames?.first())
         val receivedCategoryName = categoryName ?: intent.getStringExtra("categoryName") ?: ""
 
 
@@ -119,15 +115,13 @@ class MealListActivity : AppCompatActivity() {
             }
             R.id.action_search_meal -> {
                 val searchView = findViewById<SearchView>(R.id.searchViewMealList)
-                val fuckingSearchButton = findViewById<ActionMenuItemView>(R.id.action_search_meal)
-                fuckingSearchButton?.setOnClickListener { //разобраться почему не работает без знака вопроса
-                    if (!searchView.isVisible) {
-                        searchView.visibility = View.VISIBLE
-                    } else {
-//                        adapter.setChangedMealEntity(state.mealListEntity?.mealList)
-                        searchView.visibility = View.INVISIBLE
-                    }
+                if (!searchView.isVisible) {
+                    searchView.visibility = View.VISIBLE
+                    searchView.isIconified = false
+                } else {
+                    searchView.visibility = View.INVISIBLE
                 }
+
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         return false
@@ -142,16 +136,13 @@ class MealListActivity : AppCompatActivity() {
                 })
             }
             R.id.action_sort_meal -> {
-                val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_meal)
                 val bottomSheetFragment = BottomSheetFragment(callbackSortAscendingByName = {
                     adapter.setChangedMealEntity(viewModel.getMealListEntitySortedAscendingByName()?.mealList)
                 }, callbackSortDescendingByName = {
                     adapter.setChangedMealEntity(viewModel.getMealListEntitySortedDescendingByName()?.mealList)
                 })
 
-                sortButton?.setOnClickListener {
-                    bottomSheetFragment.show(supportFragmentManager, "bottomSheetInMealList")
-                }
+                bottomSheetFragment.show(supportFragmentManager, "bottomSheetInMealList")
             }
         }
         return super.onOptionsItemSelected(item)

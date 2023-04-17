@@ -120,17 +120,16 @@ class MainCategoryListActivity : AppCompatActivity(),
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.action_search_category -> {
                 val searchView = findViewById<SearchView>(R.id.searchViewCategory)
-                val searchButton = findViewById<ActionMenuItemView>(R.id.action_search_category)
-                searchButton?.setOnClickListener {
-                    if (!searchView.isVisible) {
-                        searchView.visibility = View.VISIBLE
-                    } else {
-                        searchView.visibility = View.INVISIBLE
-                    }
+
+                if (!searchView.isVisible) {
+                    searchView.visibility = View.VISIBLE
+                } else {
+                    searchView.visibility = View.INVISIBLE
                 }
+
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         return false
@@ -143,6 +142,7 @@ class MainCategoryListActivity : AppCompatActivity(),
                         return true
                     }
                 })
+                true
             }
             R.id.action_sort_category -> {
                 val bottomSheetFragment = BottomSheetFragment(
@@ -157,13 +157,12 @@ class MainCategoryListActivity : AppCompatActivity(),
                         )
                     }
                 )
-                val sortButton = findViewById<ActionMenuItemView>(R.id.action_sort_category)
-                sortButton?.setOnClickListener {
-                    bottomSheetFragment.show(supportFragmentManager, "BottomSheetDialog")
-                }
+                bottomSheetFragment.show(supportFragmentManager, "BottomSheetDialog")
+
+                true
             }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

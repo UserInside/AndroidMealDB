@@ -11,6 +11,7 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+
         >
 
         <androidx.appcompat.widget.SearchView
@@ -23,7 +24,7 @@
             app:iconifiedByDefault="false"
             app:queryBackground="@android:color/transparent"
             app:queryHint="Enter meal name..."
-            app:searchIcon="@drawable/ic_search_button" />
+             />
 
     </androidx.appcompat.widget.Toolbar>
 
