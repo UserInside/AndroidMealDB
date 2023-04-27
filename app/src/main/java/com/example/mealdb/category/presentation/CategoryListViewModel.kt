@@ -1,7 +1,10 @@
 package com.example.mealdb.category.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import category.data.CategoryHttpClient
 import category.data.CategoryListGatewayImplementation
 import category.domain.CategoryListEntity
@@ -14,10 +17,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CategoryListViewModel : ViewModel() {
-    lateinit var interactor: CategoryListInteractor
+//TODO
+// Независимо от того, используете ли вы DI контейнеры или нет,
+// внедрение через конструктор (Constructor Injection) должен быть
+// первым способом управления зависимостями. Его использование не
+// только позволит сделать отношения между классами более явными,
+// но также позволит определить проблемы с дизайном, когда
+// количество параметров конструктора превысит определенную
+// границу. К тому же, все современные контейнеры внедрения зависимостей поддерживают данный паттерн.
+// https://habr.com/ru/articles/352530/
+class CategoryListViewModel(
+    private val interactor: CategoryListInteractor
+) : ViewModel() {
 
-    private val _stateFlow = MutableStateFlow<CategoryListUiState>(CategoryListUiState())
+    private val _stateFlow = MutableStateFlow(CategoryListUiState())
     val stateFlow: StateFlow<CategoryListUiState> = _stateFlow.asStateFlow()
 
     init {
@@ -43,13 +56,8 @@ class CategoryListViewModel : ViewModel() {
         }
     }
 
-
     suspend fun getCategoryEntity(): CategoryListEntity {
-        val categoryHttpClient = CategoryHttpClient()
-        val gateway: CategoryListGateway = CategoryListGatewayImplementation(categoryHttpClient)
-        interactor = CategoryListInteractor(gateway)
-        val data = interactor.fetchData()
-        return data
+        return interactor.fetchData()
     }
 
     fun getCategoryListSortedAscendingByName() : CategoryListEntity {
@@ -64,5 +72,11 @@ class CategoryListViewModel : ViewModel() {
         return interactor.filterCategoryList(query)
     }
 
-
+    companion object {
+        fun factory(
+            interactor: CategoryListInteractor,
+        ): ViewModelProvider.Factory = viewModelFactory {
+            initializer { CategoryListViewModel(interactor) }
+        }
+    }
 }
