@@ -1,5 +1,8 @@
 package com.example.mealdb.category.presentation
 
+import android.app.Activity
+import android.app.ActivityOptions
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,7 +19,6 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,15 +26,13 @@ import androidx.recyclerview.widget.RecyclerView
 import category.data.CategoryHttpClient
 import category.data.CategoryListGatewayImplementation
 import category.domain.CategoryListInteractor
+import com.bumptech.glide.Glide
 import com.example.mealdb.BottomSheetFragment
 import com.example.mealdb.ContentState
 import com.example.mealdb.R
-import com.example.mealdb.category.domain.CategoryListAdapter
 import com.example.mealdb.country.presentation.CountryListFragment
+import com.example.mealdb.meal.presentation.MealListActivity
 import com.google.android.material.navigation.NavigationView
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class MainCategoryListActivity
@@ -81,8 +81,20 @@ class MainCategoryListActivity
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this@MainCategoryListActivity)
         adapter = CategoryListAdapter(
-            null,
-            this@MainCategoryListActivity
+            rm = Glide.with(this),
+            onClickListener = { category ->
+                val mealListActivity = Intent(
+                    this,
+                    MealListActivity::class.java,
+                ).apply {
+                    putExtra("categoryName", category)
+                    putExtra("flag", "category")
+                }
+                startActivity(
+                    mealListActivity,
+                    ActivityOptions.makeSceneTransitionAnimation(this as Activity).toBundle(),
+                )
+            }
         )
         recyclerView.adapter = adapter
 
@@ -93,7 +105,7 @@ class MainCategoryListActivity
         lifecycleScope.launch {
             //TODO https://developer.android.com/topic/libraries/architecture/viewmodel#implement-viewmodel
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.stateFlow.collect {state ->
+                viewModel.stateFlow.collect { state ->
                     when (state.contentState) {
                         ContentState.Idle,
                         ContentState.Loading -> {
@@ -114,7 +126,7 @@ class MainCategoryListActivity
                             errorView.visibility = View.VISIBLE
                         }
                     }
-                    adapter?.setChangedCategoryEntity(state.categoryListEntity?.categoryList)
+                    adapter?.update(state.categoryListEntity?.categoryList?.categories.orEmpty())
                 }
             }
         }
@@ -155,24 +167,25 @@ class MainCategoryListActivity
                     }
 
                     override fun onQueryTextChange(query: String?): Boolean {
-                        adapter?.setChangedCategoryEntity(
-                            viewModel.getFilteredCategoryList(query).categoryList
+                        adapter?.update(
+                            viewModel.getFilteredCategoryList(query).categoryList?.categories.orEmpty()
                         )
                         return true
                     }
                 })
                 true
             }
+
             R.id.action_sort_category -> {
                 val bottomSheetFragment = BottomSheetFragment(
                     callbackSortAscendingByName = {
-                        adapter?.setChangedCategoryEntity(
-                            viewModel.getCategoryListSortedAscendingByName().categoryList
+                        adapter?.update(
+                            viewModel.getCategoryListSortedAscendingByName().categoryList?.categories.orEmpty()
                         )
                     },
                     callbackSortDescendingByName = {
-                        adapter?.setChangedCategoryEntity(
-                            viewModel.getCategoryListSortedDescendingByName().categoryList
+                        adapter?.update(
+                            viewModel.getCategoryListSortedDescendingByName().categoryList?.categories.orEmpty()
                         )
                     }
                 )
@@ -180,6 +193,7 @@ class MainCategoryListActivity
 
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -201,6 +215,7 @@ class MainCategoryListActivity
                         .commit()
                 }
             }
+
             R.id.nav_category -> {
                 if (areaFragment != null) {
                     if (areaFragment.isVisible) {
@@ -212,12 +227,14 @@ class MainCategoryListActivity
                     drawer?.closeDrawer(GravityCompat.START)
                 }
             }
+
             R.id.theme_light -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 recreate()
                 drawer?.closeDrawer(GravityCompat.START)
 
             }
+
             R.id.theme_dark -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 recreate()
