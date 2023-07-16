@@ -7,9 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import category.data.CategoryItem
 import com.bumptech.glide.RequestManager
 import com.example.mealdb.R
+import com.example.mealdb.category.data.CategoryItem
 
 // TODO
 // стараемся не прокидывать контекст

@@ -1,6 +1,6 @@
 package category.domain
 
-import category.data.CategoryList
+import com.example.mealdb.category.data.CategoryList
 
 data class CategoryListEntity(
     val categoryList: CategoryList?

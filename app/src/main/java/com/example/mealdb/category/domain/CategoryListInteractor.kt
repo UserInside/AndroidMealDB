@@ -1,14 +1,15 @@
 package category.domain
 
-import category.data.CategoryList
+import com.example.mealdb.category.data.CategoryList
+import com.example.mealdb.category.domain.CategoryListRepository
 
 class CategoryListInteractor(
-    private val gateway: CategoryListGateway
+    private val gateway: CategoryListRepository
 ) {
-    private var categoryListEntity : CategoryListEntity? = null
+    private var categoryListEntity: CategoryListEntity? = null
 
     suspend fun fetchData(): CategoryListEntity {
-        categoryListEntity = gateway.request()
+        categoryListEntity = gateway.fetchCategoryList()
         return categoryListEntity as CategoryListEntity
     }
 
@@ -24,7 +25,8 @@ class CategoryListInteractor(
         return CategoryListEntity(
             CategoryList(categoryListEntity?.categoryList?.categories?.filter {
                 it.strCategory?.lowercase()?.contains(query?.lowercase() ?: "") ?: false
-        }))
+            })
+        )
     }
 
 }

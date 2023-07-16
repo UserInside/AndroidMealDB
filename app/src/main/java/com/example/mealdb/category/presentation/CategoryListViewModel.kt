@@ -5,10 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import category.data.CategoryHttpClient
-import category.data.CategoryListGatewayImplementation
 import category.domain.CategoryListEntity
-import category.domain.CategoryListGateway
 import category.domain.CategoryListInteractor
 import com.example.mealdb.ContentState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,15 +57,15 @@ class CategoryListViewModel(
         return interactor.fetchData()
     }
 
-    fun getCategoryListSortedAscendingByName() : CategoryListEntity {
+    fun getCategoryListSortedAscendingByName(): CategoryListEntity {
         return interactor.sortByName(_stateFlow.value.categoryListEntity)
     }
 
-    fun getCategoryListSortedDescendingByName() : CategoryListEntity {
+    fun getCategoryListSortedDescendingByName(): CategoryListEntity {
         return interactor.sortDescendingByName(_stateFlow.value.categoryListEntity)
     }
 
-    fun getFilteredCategoryList(query: String?) : CategoryListEntity {
+    fun getFilteredCategoryList(query: String?): CategoryListEntity {
         return interactor.filterCategoryList(query)
     }
 

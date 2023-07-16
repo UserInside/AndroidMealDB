@@ -23,13 +23,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import category.data.CategoryHttpClient
-import category.data.CategoryListGatewayImplementation
 import category.domain.CategoryListInteractor
 import com.bumptech.glide.Glide
 import com.example.mealdb.BottomSheetFragment
 import com.example.mealdb.ContentState
 import com.example.mealdb.R
+import com.example.mealdb.category.data.CategoryListDataSource
+import com.example.mealdb.category.data.CategoryListGatewayImplementation
+import com.example.mealdb.common.HttpClientHolder
 import com.example.mealdb.country.presentation.CountryListFragment
 import com.example.mealdb.meal.presentation.MealListActivity
 import com.google.android.material.navigation.NavigationView
@@ -45,7 +46,7 @@ class MainCategoryListActivity
         CategoryListViewModel.factory(
             CategoryListInteractor(
                 CategoryListGatewayImplementation(
-                    CategoryHttpClient()
+                    CategoryListDataSource(HttpClientHolder.httpClient)
                 )
             )
         )
