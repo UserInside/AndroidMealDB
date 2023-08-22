@@ -1,7 +1,8 @@
 package category.domain
 
-import category.data.CategoryItem
-import category.data.CategoryList
+import com.example.mealdb.category.data.CategoryItem
+import com.example.mealdb.category.data.CategoryList
+import com.example.mealdb.category.domain.CategoryListRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -11,8 +12,8 @@ import org.junit.jupiter.api.Assertions.*
 
 class CategoryInteractorTest {
     private val interactor = CategoryListInteractor(
-        object : CategoryListGateway {
-            override suspend fun request(): CategoryListEntity {
+        object : CategoryListRepository {
+            override suspend fun fetchCategoryList(): CategoryListEntity {
                 return CategoryListEntity(
                     categoryList = CategoryList(
                         categories = listOf<CategoryItem>(
