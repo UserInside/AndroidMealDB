@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
 import receipt.data.Ingredient
 import receipt.data.RecipeGatewayImplementation
 import receipt.data.RecipeHttpClient
@@ -25,6 +26,7 @@ class RecipeViewModel(
     val mealId: String?,
 ) : ViewModel() {
 
+    @OptIn(InternalSerializationApi::class)
     private var _stateFlow = MutableStateFlow(RecipeUiState())
     val stateFlow : StateFlow<RecipeUiState> = _stateFlow
 
@@ -32,6 +34,7 @@ class RecipeViewModel(
         fetchData()
     }
 
+    @OptIn(InternalSerializationApi::class)
     fun fetchData() {
         if (stateFlow.value.contentState == ContentState.Loading) return
 
@@ -57,6 +60,7 @@ class RecipeViewModel(
         }
     }
 
+    @OptIn(InternalSerializationApi::class)
     suspend fun getRecipeItem(): RecipeItem? {
         val httpClient = RecipeHttpClient(mealId)
         val gateway: RecipeGateway = RecipeGatewayImplementation(httpClient)
@@ -72,6 +76,7 @@ class RecipeViewModel(
         context.startActivity(intent)
     }
 
+    @OptIn(InternalSerializationApi::class)
     fun openRecipeListByArea() {
         val intent = Intent(context, MealListActivity::class.java)
         intent.putExtra("categoryName", stateFlow.value.recipeItem?.strArea)
@@ -79,17 +84,20 @@ class RecipeViewModel(
         context.startActivity(intent)
     }
 
+    @OptIn(InternalSerializationApi::class)
     fun showVideo() {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(stateFlow.value.recipeItem?.strYoutube)
         context.startActivity(intent)
     }
 
+    @OptIn(InternalSerializationApi::class)
     fun showTags() : TagsAdapter {
         return TagsAdapter(stateFlow.value.recipeItem?.tags)
     }
 
 
+    @OptIn(InternalSerializationApi::class)
     fun getIngredientsList() : String? {
         val ingredients : List<Ingredient>? = stateFlow.value.recipeItem?.ingredients
         var textN = ""
@@ -100,6 +108,7 @@ class RecipeViewModel(
         return textN
     }
 
+    @OptIn(InternalSerializationApi::class)
     fun getMeasuresList() : String {
         val ingredients : List<Ingredient>? = stateFlow.value.recipeItem?.ingredients
         var textM = ""
